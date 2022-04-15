@@ -1,6 +1,6 @@
 {
   "name": "@data-fair/processing-sitadel",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -24,4 +24,17 @@
   "devDependencies": {
     "standard": "^16.0.3"
   },
+  "dependencies": {
+    "_comment": "axios : ^0.21.4",
+    "axios": "^0.21.4",
+    "chalk": "^5.0.1",
+    "config": "^3.3.7",
+    "follow-redirects": "^1.14.9",
+    "form-data": "^4.0.0",
+    "fs": "0.0.1-security",
+    "fs-extra": "^10.0.1"
+  },
+  "directories": {
+    "test": "test"
+  }
 }
