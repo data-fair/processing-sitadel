@@ -1,0 +1,27 @@
+{
+  "name": "@data-fair/processing-sitadel",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha",
+    "lint": "eslint --ignore-path .gitignore .",
+    "lint-fix": "eslint --ignore-path .gitignore --fix ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WiPhil/processing-sitadel.git"
+  },
+  "keywords": [
+    "data-fair-processings-plugin"
+  ],
+  "author": "Philippe Laidin, Benjamin Giraud-renard",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/WiPhil/processing-sitadel/issues"
+  },
+  "homepage": "https://github.com/WiPhil/processing-sitadel#readme",
+  "devDependencies": {
+    "standard": "^16.0.3"
+  },
+}
