@@ -25,14 +25,14 @@
     "standard": "^16.0.3"
   },
   "dependencies": {
-    "_comment": "axios : ^0.21.4",
     "axios": "^0.21.4",
-    "chalk": "^5.0.1",
+    "chalk": "^4.1.2",
     "config": "^3.3.7",
     "follow-redirects": "^1.14.9",
     "form-data": "^4.0.0",
     "fs": "0.0.1-security",
-    "fs-extra": "^10.0.1"
+    "fs-extra": "^10.0.1",
+    "moment": "^2.29.2"
   },
   "directories": {
     "test": "test"
