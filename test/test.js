@@ -61,7 +61,7 @@ describe('Station service processing', () => {
     const cwd = process.cwd()
     await fs.ensureDir('data/')
     process.chdir('data/')
-    console.log(process.cwd())
+    // console.log(process.cwd())
     await processing.run({ pluginConfig, processingConfig, tmpDir: path.resolve('./'), axios, log, patchConfig })
     process.chdir(cwd)
   })
