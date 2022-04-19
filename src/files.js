@@ -40,20 +40,10 @@ exports.fetchAndExtract = async (url, unzipDir, overwrite = true) => {
   return file
 }
 
-exports.fetch = async (url, dir = 'downloads', fileName, overwrite = true) => {
+exports.fetch = async (url, dir = 'downloads', fileName) => {
   await fs.ensureDir(`${process.cwd()}/${dir}`)
   const parsedPath = path.parse(new URL(url).pathname)
   const file = `${process.cwd()}/${dir}/${fileName || parsedPath.name + parsedPath.ext}`
-
-  // remove previous result
-  if (await fs.pathExists(file)) {
-    if (overwrite) {
-      await fs.remove(file)
-    } else {
-      console.log(`${file} already exists`)
-      return file
-    }
-  }
 
   console.log(`download ${url} -> ${file}`)
   // -N is for timestamping, so not re-fetching previous versions of the file
