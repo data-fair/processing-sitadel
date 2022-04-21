@@ -1,4 +1,4 @@
-process.env.NODE_ENV = 'test'
+process.env.NODE_ENV = 'local-dev'
 const fs = require('fs-extra')
 const config = require('config')
 const axios = require('axios')
@@ -41,7 +41,8 @@ describe('Station service processing', () => {
       datasetIdPrefix: 'PC',
       dataset: {
         title: 'PC - test'
-      }
+      },
+      geocoderApiKey: config.geocoderApiKey
     }
 
     const log = {
@@ -62,7 +63,7 @@ describe('Station service processing', () => {
     await fs.ensureDir('data/')
     process.chdir('data/')
     // console.log(process.cwd())
-    await processing.run({ pluginConfig, processingConfig, tmpDir: path.resolve('./'), axios, log, patchConfig })
+    await processing.run({ pluginConfig, processingConfig, tmpDir: path.resolve('./'), axios: axiosInstance, log, patchConfig })
     process.chdir(cwd)
   })
 })
