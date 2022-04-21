@@ -1,0 +1,10 @@
+{
+  "type": "object",
+  "properties": {
+    "stringProp": {
+      "type": "string",
+      "title": "Clé API géocodeur",
+      "description": "Insérez ici votre clé API pour utiliser le géocodeur."
+    }
+  }
+}
