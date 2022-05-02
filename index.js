@@ -1,11 +1,9 @@
 const download = require('./src/download')
 const process = require('./src/process')
 const upload = require('./src/upload')
-const fetchParcels = require('./src/parcels')
 
 exports.run = async ({ pluginConfig, processingConfig, tmpDir, axios, log, patchConfig }) => {
-  await fetchParcels(log)
-  await download(pluginConfig, tmpDir, axios, log)
+  // await download(pluginConfig, tmpDir, axios, log)
   await process(processingConfig, axios, log)
   // if (!processingConfig.skipUpload) await upload(processingConfig, tmpDir, axios, log, patchConfig)
 }
