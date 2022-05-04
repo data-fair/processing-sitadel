@@ -2,8 +2,12 @@ const fs = require('fs-extra')
 const util = require('util')
 const pump = util.promisify(require('pump'))
 const csv = require('csv')
+const csvSync = require('csv/sync')
 const config = require('config')
 const stream = require('stream')
+const FormData = require('form-data')
+
+let header = false
 
 function measure (lat1, lon1, lat2, lon2) { // generally used geo measurement function
   // console.log(lat1, lon1, lat2, lon2)
@@ -18,28 +22,42 @@ function measure (lat1, lon1, lat2, lon2) { // generally used geo measurement fu
   return d * 1000 // meters
 }
 
-async function geocodeStream (input, axios, log) {
-  const param = {
-    params: {
-      q: `${input.ADR_NUM_TER} ${input.ADR_LIBVOIE_TER} ${input.ADR_LIEUDIT_TER} ${input.ADR_LOCALITE_TER}`
+async function geocode (arr, axios, log) {
+  // create a deep copy of the array
+  // arr = JSON.parse(JSON.stringify(arr))
+  log.info(`Géocodage de ${arr.length} items`, '')
+
+  let csvString = Object.keys(arr[0]).join(',') + '\n'
+  csvString += csvSync.stringify(arr)
+  // console.log(csvString)
+
+  const form = new FormData()
+  form.append('data', csvString, 'filename')
+  form.append('columns', 'ADR_NUM_TER')
+  form.append('columns', 'ADR_LIBVOIE_TER')
+  form.append('columns', 'ADR_LIEUDIT_TER')
+  form.append('columns', 'ADR_LOCALITE_TER')
+  form.append('citycode', 'COMM')
+  form.append('result_columns', 'result_type')
+  form.append('result_columns', 'latitude')
+  form.append('result_columns', 'longitude')
+
+  const response = await axios.post(
+    'https://api-adresse.data.gouv.fr/search/csv/',
+    form,
+    {
+      headers: {
+        ...form.getHeaders()
+      }
     }
+  )
+
+  if (!header) {
+    header = true
+    return response.data
   }
-  let data
-  try {
-    data = (await axios.get('https://api-adresse.data.gouv.fr/search/', param)).data.features[0]
-  } catch (e) {
-    log.error('geocode error', e.message)
-  }
-  if (data !== undefined) {
-    const lat = data.geometry.coordinates[1]
-    const lon = data.geometry.coordinates[0]
-    const matchLevel = data.geometry.type
-    input.geocoding = { lat, lon, matchLevel }
-  } else {
-    console.error(`Geocoding error : not find ${param.params.q}`)
-    input.geocoding = { }
-  }
-  return input
+  // remove the header
+  return response.data.substring(response.data.indexOf('\n') + 1)
 }
 
 async function getParcel (input, stats, axios, log) {
@@ -56,10 +74,9 @@ async function getParcel (input, stats, axios, log) {
       },
       params: {
         qs: `code:/${codeParcelle}/`,
-        // geo_distance: `${input.geocoding.lon},${input.geocoding.lat},10`,
         size: 100
       },
-      timeout: 2000
+      timeout: 3000
     }
     let codeParcelleTotal
 
@@ -70,6 +87,14 @@ async function getParcel (input, stats, axios, log) {
     }
 
     let stoElem
+    input.geocoding = {}
+    input.geocoding.lat = input.latitude
+    input.geocoding.lon = input.longitude
+    input.geocoding.result_type = input.result_type
+
+    delete input.latitude
+    delete input.longitude
+    delete input.result_type
 
     // console.log(codeParcelleTotal.results)
     if (codeParcelleTotal !== undefined) {
@@ -113,7 +138,7 @@ async function getParcel (input, stats, axios, log) {
           input.latitude = stoElem.coord.split(',')[1]
           input.longitude = stoElem.coord.split(',')[0]
           input.parcelle = stoElem.code
-        } else if (codeParcelleTotal.results.length > 0 && (input.geocoding.matchLevel === 'Point')) {
+        } else if (codeParcelleTotal.results.length > 0 && (input.geocoding.result_type === 'housenumber' || input.geocoding.result_type === 'street')) {
           let min, secondD
           for (const elem of codeParcelleTotal.results) {
             // console.log(elem.coord.split(',')[1], elem.coord.split(',')[0])
@@ -169,6 +194,8 @@ async function getParcel (input, stats, axios, log) {
           stats.erreur++
         }
       }
+    } else {
+      stats.erreur++
     }
     delete input.geocoding
   } else {
@@ -191,15 +218,29 @@ const extend = async (processingConfig, axios, log) => {
       lastDP: undefined
     }
 
+    const tab = []
     await pump(
       fs.createReadStream(filename),
       csv.parse({ columns: true, delimiter: ';' }),
       new stream.Transform({
         objectMode: true,
         transform: async (obj, _, next) => {
-          next(null, await geocodeStream(obj, axios, log))
+          tab.push(obj)
+          if (tab.length >= 1000) {
+            const result = await geocode(tab, axios, log)
+            tab.length = 0
+            return next(null, result)
+          }
+          return next()
+        },
+        flush: async (callback) => {
+          if (tab.length > 0) {
+            const result = await geocode(tab, axios, log)
+            callback(null, result)
+          }
         }
       }),
+      csv.parse({ columns: true, delimiter: ',' }),
       new stream.Transform({
         objectMode: true,
         transform: async (obj, _, next) => {
