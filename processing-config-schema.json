@@ -1,10 +1,54 @@
 {
   "type": "object",
-  "properties": {
-    "stringProp": {
-      "type": "string",
-      "title": "Clé API géocodeur",
-      "description": "Insérez ici votre clé API pour utiliser le géocodeur."
+  "x-display": "tabs",
+  "allOf": [{
+    "title": "Paramètres",
+    "properties": {
+      "clearFiles": {
+        "title": "supprimer les fichiers téléchargés",
+        "type": "boolean",
+        "default": true
+      },
+      "processFile": {
+        "type": "array",
+			  "title": "Fichier à traiter",
+			  "items": {
+			    "type": "string",
+			    "oneOf": [
+					  {
+					  	"const": "logements",
+					  	"title": "Creant logements"
+					  },
+					  {
+					  	"const": "locaux",
+					  	"title": "Creant locaux"
+					  },
+					  {
+					  	"const": "amenager",
+					  	"title": "Permis amenager"
+					  },
+					  {
+					  	"const": "demolir",
+					  	"title": "Permis de demolir"
+					  }
+				  ]
+        }
+			},
+      "departements": {
+        "type": "array",
+        "title": "Départements à utiliser",
+        "items": {
+          "type": "integer"
+        },
+        "description": "Laissez vide pour sélectionner l'ensemble des départements."
+      },
+      "datasetIdPrefix": {
+        "title": "Préfixe des identifiants de jeux de données",
+        "type": "string",
+        "default": "sitadel"
+      }
     }
-  }
+  }]
 }
+
+
