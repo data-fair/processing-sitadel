@@ -19,14 +19,16 @@ const withStreamableFile = async (filePath, fn) => {
   await fs.move(filePath + '.tmp', filePath, { overwrite: true })
 }
 
-module.exports = async (pluginConfig, dir = 'data', axios, log) => {
+module.exports = async (processingConfig, dir = 'data', axios, log) => {
   const datasetId = '5a5f4f6c88ee387da4d252a3'
   const res = await axios.get('https://www.data.gouv.fr/api/1/datasets/' + datasetId)
 
   const ressources = res.data.resources
+  const processingFile = processingConfig.processFile
+  log.step('Téléchargement')
   for (const file of ressources) {
-    if (file.type === 'main' && file.format !== 'html') {
-      log.step(`téléchargement du fichier ${file.title}`)
+    if (file.type === 'main' && file.format !== 'html' && (file.title.normalize('NFD').replace(/[\u0300-\u036f]/g, '')).includes(processingFile)) {
+      log.info(`téléchargement du fichier ${file.title}`)
       const url = new URL(file.url)
       const fileName = path.parse(url.pathname).base
       await withStreamableFile(fileName, async (writeStream) => {
@@ -35,9 +37,10 @@ module.exports = async (pluginConfig, dir = 'data', axios, log) => {
       })
 
       if (fileName.endsWith('.zip')) {
-        log.debug(`extraction de l'archive ${fileName}`, '')
+        log.info(`extraction de l'archive ${fileName}`, '')
         const { stderr } = await exec(`unzip -o ${fileName}`)
         if (stderr) throw new Error(`échec à l'extraction de l'archive ${fileName} : ${stderr}`)
+        await fs.remove(fileName)
       }
     }
   }

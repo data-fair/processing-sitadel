@@ -91,7 +91,7 @@ async function getParcel (array, stats, axios, log) {
   const nbParcels = (await axios.get('https://staging-koumoul.com/data-fair/api/v1/datasets/cadastre-parcelles-coords/lines', param)).data.total
 
   const end = new Date().getTime()
-  console.log(`Temps requête 1 : ${end - startTime} ms`)
+  log.info(`Temps requête nbParcels : ${end - startTime} ms`)
   // console.log(nbParcels)
 
   param.params.size = nbParcels
@@ -110,7 +110,7 @@ async function getParcel (array, stats, axios, log) {
   }
 
   const end2 = new Date().getTime()
-  console.log(`Temps requête 2 : ${end2 - start2} ms`)
+  log.info(`Temps requête 2 : ${end2 - start2} ms`)
   stats.moyReq += end2 - start2
   stats.sum += 1
 
@@ -126,13 +126,11 @@ async function getParcel (array, stats, axios, log) {
     delete input.longitude
     delete input.result_type
 
-    // console.log('traitement de', input)
     if (input.num_cadastre1.trim().length) {
       const codeParcelleTotal = commParcels.filter(elem => elem.code.match(new RegExp(`${array[0].COMM}.....${input.num_cadastre1.padStart(4, '0')}`)))
 
       let stoElem
 
-      // console.log(codeParcelleTotal.results)
       if (codeParcelleTotal !== undefined) {
         const matches = codeParcelleTotal.filter(s => s.code.substr(8, 2) === input.sec_cadastre1)
         if (matches.length > 0) {
@@ -146,7 +144,6 @@ async function getParcel (array, stats, axios, log) {
           } else {
             let min, secondD
             for (const elem of matches) {
-              // console.log(elem.coord.split(',')[1], elem.coord.split(',')[0])
               const dist = measure(parseFloat(elem.coord.split(',')[1]), parseFloat(elem.coord.split(',')[0]), input.geocoding.lat, input.geocoding.lon)
               if (!min || dist < min) {
                 min = dist
@@ -167,8 +164,7 @@ async function getParcel (array, stats, axios, log) {
           if (codeParcelleTotal.length === 1) {
             stoElem = codeParcelleTotal[0]
 
-            // console.log('On est sûr du résultat. Une seule parcelle disponible')
-            // console.log(stoElem.code, stoElem.coord, ':', input.geocoding.lat, input.geocoding.lon)
+            // On est sûr du résultat. Une seule parcelle disponible
             stats.sur++
             input.latitude = stoElem.coord.split(',')[1]
             input.longitude = stoElem.coord.split(',')[0]
@@ -177,7 +173,6 @@ async function getParcel (array, stats, axios, log) {
           } else if (codeParcelleTotal.length > 0 && (input.geocoding.result_type === 'housenumber' || input.geocoding.result_type === 'street')) {
             let min, secondD
             for (const elem of codeParcelleTotal) {
-              // console.log(elem.coord.split(',')[1], elem.coord.split(',')[0])
               const dist = measure(parseFloat(elem.coord.split(',')[1]), parseFloat(elem.coord.split(',')[0]), input.geocoding.lat, input.geocoding.lon)
               if (!min || dist < min) {
                 min = dist
@@ -192,8 +187,7 @@ async function getParcel (array, stats, axios, log) {
             input.longitude = stoElem.coord.split(',')[0]
             input.parcel_confidence = (percent < 25 ? '<25' : (percent + '').padStart(3, '0')) + ' %'.padStart(2, '0')
             input.parcelle = stoElem.code
-            // console.log('On prend le plus proche parce que la précision du geocoder est pas mal')
-            // console.log(min, stoElem.code, stoElem.coord, ':', input.geocoding.lat, input.geocoding.lon, Math.round(100 * secondD / (min + secondD)))
+            // On prend le plus proche parce que la précision du geocoder est correcte
             stats.geocode++
           } else if (codeParcelleTotal.length) {
             let stoElem, confidence
@@ -204,7 +198,6 @@ async function getParcel (array, stats, axios, log) {
             } else {
               let min, secondD
               for (const elem of codeParcelleTotal) {
-                // console.log(elem.coord.split(',')[1], elem.coord.split(',')[0])
                 const dist = measure(parseFloat(elem.coord.split(',')[1]), parseFloat(elem.coord.split(',')[0]), input.geocoding.lat, input.geocoding.lon)
                 if (!min || dist < min) {
                   secondD = min
@@ -215,15 +208,12 @@ async function getParcel (array, stats, axios, log) {
                 }
               }
               const percent3 = Math.round(100 * secondD / (min + secondD))
-              // console.log(percent3)
               confidence = (percent3 < 25 ? '<25' : (percent3 + '').padStart(3, '0')) + ' %'.padStart(2, '0')
             }
             input.latitude = stoElem.coord.split(',')[1]
             input.longitude = stoElem.coord.split(',')[0]
             input.parcel_confidence = confidence
             input.parcelle = stoElem.code
-
-            // On a une précision mauvaise, on chope juste le premier résultat des ${codeParcelleTotal.results.length} disponibles
             stats.premier++
           } else {
             input.latitude = undefined
@@ -252,7 +242,7 @@ async function getParcel (array, stats, axios, log) {
     ret.push(input)
   }
   const endTraitement = new Date().getTime()
-  console.log(`Temps traitement : ${endTraitement - startTraitement} ms`)
+  log.info(`Temps traitement : ${endTraitement - startTraitement} ms`)
 
   if (!stats.header) {
     stats.header = true
@@ -270,7 +260,9 @@ function compare (a, b) {
 }
 
 async function fusion (a, b, option, log) {
-  log.step(`Fusion de ${a} et ${b}`, option)
+  if (b === undefined) return fs.createReadStream(a, { objectMode: true }).pipe(csv.parse({ columns: true, delimiter: ';' })).pipe(filter(function (data) { return option.includes(parseInt(data.DEP)) }, { objectMode: true }))
+
+  log.step(`Fusion de ${a} et ${b}. Option : ${option}`)
 
   const h1 = new Promise(function (resolve) {
     fs.createReadStream(a, { objectMode: true }).on('data', function (data) { resolve(data.toString().split('\n')[0]) })
@@ -283,6 +275,8 @@ async function fusion (a, b, option, log) {
   if (await h1 !== await h2) {
     log.error('Erreur : Les deux CSVs ne possèdent pas la même en-tête')
     throw new Error('Erreur : Les deux CSVs ne possèdent pas la même en-tête')
+  } else {
+    log.info('Fichiers compatibles')
   }
 
   const f1 =
@@ -312,13 +306,18 @@ const extend = async (processingConfig, axios, log) => {
   const batchComm = []
 
   const tab = []
+
+  let dir = await fs.readdir('.')
+  dir = dir.filter(file => file.endsWith('.csv') && file.includes(processingConfig.processFile) && !file.startsWith(processingConfig.datasetIdPrefix))
+  const file1 = dir[0]
+  const file2 = dir[1]
   await pump(
-    await fusion('Permis_demolir.csv', 'Permis_demolir.csv', [56], log),
+    await fusion(file1, file2, processingConfig.departements, log),
     new stream.Transform({
       objectMode: true,
       transform: async (obj, _, next) => {
         tab.push(obj)
-        if (tab.length >= 1000) {
+        if (tab.length >= 10000) {
           const result = await geocode(tab, axios, log)
           tab.length = 0
           return next(null, result)
@@ -340,7 +339,7 @@ const extend = async (processingConfig, axios, log) => {
           batchComm.push(obj)
           currComm = obj.COMM
         } else if (batchComm.length > 0) {
-          log.info(`Traitement de ${batchComm.length} parcelle(s) dans la commune ${currComm}`, '')
+          log.step(`Traitement de ${batchComm.length} parcelle(s) dans la commune ${currComm}`, '')
           const result = await getParcel(batchComm, stats, axios, log)
           currComm = obj.COMM
           batchComm.length = 0
@@ -351,7 +350,7 @@ const extend = async (processingConfig, axios, log) => {
       },
       flush: async (callback) => {
         if (batchComm.length > 0) {
-          log.info(`Traitement de ${batchComm.length} parcelle(s) dans la commune ${currComm}`, '')
+          log.step(`Traitement de ${batchComm.length} parcelle(s) dans la commune ${currComm}`, '')
           const result = await getParcel(batchComm, stats, axios, log)
           callback(null, result)
         }
@@ -359,9 +358,10 @@ const extend = async (processingConfig, axios, log) => {
     }),
     csv.parse({ columns: true, delimiter: ',' }),
     csv.stringify({ header: true, quoted_string: true }),
-    fs.createWriteStream(processingConfig.datasetIdPrefix + '-' + 't.csv')
+    fs.createWriteStream(processingConfig.datasetIdPrefix + '-' + processingConfig.processFile + '.csv')
   )
   const sum = stats.sur + stats.geocode + stats.premier + stats.erreur
+  log.step('Fin du traitement')
   log.info(`Sûr : ${Math.round(stats.sur * 100 / sum)}%, Géocodé : ${Math.round(stats.geocode * 100 / sum)}%, Premier : ${Math.round(stats.premier * 100 / sum)}%, Non défini : ${Math.round(stats.erreur * 100 / sum)}%, Total : ${sum}`)
   log.info(`Moy requête 2 : ${Math.round(stats.moyReq / stats.sum)} ms`, '')
 }

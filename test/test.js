@@ -36,13 +36,13 @@ describe('Station service processing', () => {
     const pluginConfig = { pluginMessage: 'Hello' }
 
     const processingConfig = {
-      clearFiles: false,
-      skipUpload: false,
-      datasetIdPrefix: 'PC',
+      clearFiles: true,
+      datasetIdPrefix: 'Sitadel',
       dataset: {
         title: 'PC - test'
       },
-      geocoderApiKey: config.geocoderApiKey
+      departements: [56],
+      processFile: 'locaux'
     }
 
     const log = {
