@@ -62,12 +62,19 @@ async function geocode (arr, axios, log) {
 }
 
 async function getParcel (array, stats, axios, log) {
-  if (array.length > 1400) {
-    log.error('getParcel, trop de parcelles')
-    throw new Error('getParcel : Trop de parcelles')
-  }
   let stringRequest = ''
   let a = [...new Set(array.map(elem => elem.num_cadastre1.padStart(4, '0')))]
+  if (a.length > 1400) {
+    log.error('getParcel, trop de parcelles pour l\'URL')
+    for (const i of array) {
+      delete i.result_type
+      i.latitude = undefined
+      i.longitude = undefined
+      i.parcel_confidence = undefined
+      i.parcelle = undefined
+    }
+    return csvSync.stringify(array)
+  }
   const ecart = 198
   do {
     stringRequest += `/.*(${a.slice(0, ecart).join('|')})/`
@@ -362,7 +369,7 @@ const extend = async (processingConfig, axios, log) => {
   )
   const sum = stats.sur + stats.geocode + stats.premier + stats.erreur
   log.step('Fin du traitement')
-  log.info(`Sûr : ${Math.round(stats.sur * 100 / sum)}%, Géocodé : ${Math.round(stats.geocode * 100 / sum)}%, Premier : ${Math.round(stats.premier * 100 / sum)}%, Non défini : ${Math.round(stats.erreur * 100 / sum)}%, Total : ${sum}`)
+  log.info(`Sûr : ${Math.round(stats.sur * 100 / sum)}%, Géocodé : ${Math.round(stats.geocode * 100 / sum)}%, Géododé peu précis : ${Math.round(stats.premier * 100 / sum)}%, Non défini : ${Math.round(stats.erreur * 100 / sum)}%, Total : ${sum}`)
   log.info(`Moy requête 2 : ${Math.round(stats.moyReq / stats.sum)} ms`, '')
 }
 

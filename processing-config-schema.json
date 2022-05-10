@@ -1,7 +1,42 @@
 {
   "type": "object",
   "x-display": "tabs",
+  "required": ["datasetMode"],
   "allOf": [{
+    "title": "Jeu de données",
+    "oneOf": [{
+      "title": "Créer un jeu de données",
+      "required": ["dataset"],
+      "properties": {
+        "datasetMode": { "type": "string", "const": "create", "title": "Action" },
+        "dataset": {
+          "type": "object",
+          "required": ["title"],
+          "properties": {
+            "id": { "type": "string", "title": "sitadel" },
+            "title": { "type": "string", "title": "Titre", "default": "sitadel" }
+          }
+        }
+      }
+    }, {
+      "title": "Mettre à jour un jeu de données",
+      "required": ["dataset"],
+      "properties": {
+        "datasetMode": { "type": "string", "const": "update" },
+        "dataset": {
+          "type": "object",
+          "x-fromUrl": "{context.dataFairUrl}/api/v1/datasets?q={q}&select=id,title&{context.ownerFilter}",
+          "x-itemsProp": "results",
+          "x-itemTitle": "title",
+          "x-itemKey": "id",
+          "properties": {
+            "id": { "type": "string", "title": "Identifiant" },
+            "title": { "type": "string", "title": "Titre" }
+          }
+        }
+      }
+    }]
+  }, {
     "title": "Paramètres",
     "properties": {
       "clearFiles": {
@@ -10,36 +45,19 @@
         "default": true
       },
       "processFile": {
-        "type": "array",
-			  "title": "Fichier à traiter",
-			  "items": {
-			    "type": "string",
-			    "oneOf": [
-					  {
-					  	"const": "logements",
-					  	"title": "Creant logements"
-					  },
-					  {
-					  	"const": "locaux",
-					  	"title": "Creant locaux"
-					  },
-					  {
-					  	"const": "amenager",
-					  	"title": "Permis amenager"
-					  },
-					  {
-					  	"const": "demolir",
-					  	"title": "Permis de demolir"
-					  }
-				  ]
-        }
-			},
+        "type": "string",
+        "title": "Fichier à traiter",
+        "oneOf": [
+          { "const": "logements", "title": "Créant logements" },
+          { "const": "locaux", "title": "Créant locaux" },
+          { "const": "amenager", "title": "Permis aménager" },
+          { "const": "demolir", "title": "Permis de démolir" }
+        ]
+      },
       "departements": {
         "type": "array",
         "title": "Départements à utiliser",
-        "items": {
-          "type": "integer"
-        },
+        "items": { "type": "integer" },
         "description": "Laissez vide pour sélectionner l'ensemble des départements."
       },
       "datasetIdPrefix": {
@@ -50,5 +68,3 @@
     }
   }]
 }
-
-

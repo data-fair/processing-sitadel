@@ -42,7 +42,7 @@ describe('Station service processing', () => {
         title: 'PC - test'
       },
       departements: [56],
-      processFile: 'locaux'
+      processFile: 'demolir'
     }
 
     const log = {

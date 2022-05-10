@@ -1,3 +1,8 @@
+const fs = require('fs-extra')
+const path = require('path')
+const util = require('util')
+const FormData = require('form-data')
+
 function displayBytes (aSize) {
   aSize = Math.abs(parseInt(aSize, 10))
   if (aSize === 0) return '0 octets'
@@ -7,5 +12,38 @@ function displayBytes (aSize) {
   }
 }
 
-exports.upload = async (id, schema, axios, log) => {
+module.exports = async (processingConfig, tmpDir, axios, log, patchConfig) => {
+  const datasetSchema = require(`./schema_${processingConfig.processFile}.json`)
+  const formData = new FormData()
+
+  if (processingConfig.datasetMode === 'update') {
+    await log.step('Mise à jour du jeu de données')
+  } else {
+    formData.append('schema', JSON.stringify(datasetSchema))
+    formData.append('title', processingConfig.dataset.title)
+    await log.step('Création du jeu de données')
+  }
+
+  formData.append('title', processingConfig.processFile)
+  const filePath = path.join(tmpDir, processingConfig.datasetIdPrefix + '-' + processingConfig.processFile + '.csv')
+  formData.append('file', fs.createReadStream(filePath), { filename: path.parse(filePath).base })
+
+  formData.getLength = util.promisify(formData.getLength)
+  const contentLength = await formData.getLength()
+  await log.info(`chargement de (${displayBytes(contentLength)})`)
+  const dataset = (await axios({
+    method: 'post',
+    url: (processingConfig.dataset && processingConfig.dataset.id) ? `api/v1/datasets/${processingConfig.dataset.id}` : 'api/v1/datasets',
+    data: formData,
+    maxContentLength: Infinity,
+    maxBodyLength: Infinity,
+    headers: { ...formData.getHeaders(), 'content-length': contentLength }
+  })).data
+
+  if (processingConfig.datasetMode === 'update') {
+    await log.info(`jeu de donnée mis à jour, id="${dataset.id}", title="${dataset.title}"`)
+  } else {
+    await log.info(`jeu de donnée créé, id="${dataset.id}", title="${dataset.title}"`)
+    await patchConfig({ datasetMode: 'update', dataset: { id: dataset.id, title: dataset.title } })
+  }
 }
