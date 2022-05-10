@@ -3,9 +3,6 @@ const path = require('path')
 const util = require('util')
 const pump = util.promisify(require('pump'))
 const exec = util.promisify(require('child_process').exec)
-// const config = require('config')
-
-// const { write } = require("fs")
 
 const withStreamableFile = async (filePath, fn) => {
   // creating empty file before streaming seems to fix some weird bugs with NFS

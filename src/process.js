@@ -3,7 +3,6 @@ const util = require('util')
 const pump = util.promisify(require('pump'))
 const csv = require('csv')
 const csvSync = require('csv/sync')
-const config = require('config')
 const stream = require('stream')
 const FormData = require('form-data')
 const mergeSortStream = require('merge-sort-stream')
@@ -84,9 +83,6 @@ async function getParcel (array, stats, axios, log) {
   if (a.length > 0) stringRequest += `/.*(${a.slice(0, ecart).join('|')})/`
 
   const param = {
-    headers: {
-      'x-apiKey': config.dataFairAPIKey
-    },
     params: {
       qs: `code:(/${array[0].COMM}.{9}/ AND (${stringRequest}))`,
       size: 0
@@ -111,7 +107,7 @@ async function getParcel (array, stats, axios, log) {
   let next = parcels.next
 
   for (let tour = 1; tour < Math.ceil(nbParcels / 10000); tour++) {
-    parcels = (await axios.get(next, { headers: { 'x-apiKey': config.dataFairAPIKey } })).data
+    parcels = (await axios.get(next)).data
     commParcels.push(...parcels.results)
     next = parcels.next
   }
