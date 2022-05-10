@@ -39,7 +39,7 @@ describe('Station service processing', () => {
       clearFiles: true,
       datasetIdPrefix: 'Sitadel',
       dataset: {
-        title: 'PC - test'
+        title: 'Sitadel - test'
       },
       departements: [56],
       processFile: 'demolir'

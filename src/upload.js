@@ -24,13 +24,13 @@ module.exports = async (processingConfig, tmpDir, axios, log, patchConfig) => {
     await log.step('Création du jeu de données')
   }
 
-  formData.append('title', processingConfig.processFile)
   const filePath = path.join(tmpDir, processingConfig.datasetIdPrefix + '-' + processingConfig.processFile + '.csv')
   formData.append('file', fs.createReadStream(filePath), { filename: path.parse(filePath).base })
 
   formData.getLength = util.promisify(formData.getLength)
   const contentLength = await formData.getLength()
   await log.info(`chargement de (${displayBytes(contentLength)})`)
+
   const dataset = (await axios({
     method: 'post',
     url: (processingConfig.dataset && processingConfig.dataset.id) ? `api/v1/datasets/${processingConfig.dataset.id}` : 'api/v1/datasets',

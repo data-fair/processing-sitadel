@@ -1,574 +1,572 @@
-{
-	"fields": [
-		{
-            "key": "REG",
-            "title": "Code de la région",
-            "description": "Code de la région du lieu des travaux",
-            "type": "string"
-        },
-        {
-            "key": "DEP",
-            "title": "Code du département",
-            "description": "Code du département du lieu des travaux",
-            "type": "string"
-        },
-        {
-            "key": "COMM",
-            "title": "Code de la commune",
-            "description": "Code de la commune du lieu des travaux",
-            "type": "string"
-        },
-		{
-            "key": "Type_DAU",
-            "title": "Demande d'autorisation d'urbanisme",
-            "description": "Type de DAU -- demande d'autorisation d'urbanisme (PC ou DP)",
-            "type": "string"
-        },
-        {
-            "key": "Num_DAU",
-            "title": "Numéro demande d'autorisation d'urbanisme",
-            "description": "Numéro d'enregistrement de la demande d'autorisation d'urbanisme",
-            "type": "string"
-        },
-        {
-            "key": "Etat_DAU",
-            "title": "Etat d'avancement du projet",
-            "description": "Etat d'avancement du projet",
-            "type": "string"
-        },
-		{
-            "key": "DATE_REELLE_AUTORISATION",
-            "title": "Date réelle d'autorisation initiale",
-            "description": "Date réelle d'autorisation initiale",
-            "type": "date"
-        },
-        {
-            "key": "DATE_REELLE_DOC",
-            "title": "Date réelle d'ouverture de chantier",
-            "description": "Date réelle d'ouverture de chantier",
-            "type": "date"
-        },
-        {
-            "key": "DATE_REELLE_DAACT",
-            "title": "Date réelle d'achèvement des travaux",
-            "description": "Date réelle d'achèvement des travaux",
-            "type": "date"
-        },
-        {
-            "key": "DPC_AUT",
-            "title": "Date de prise en compte de l'autorisation initiale",
-            "description": "Date (mois) de prise en compte (DPC) de l'autorisation initiale",
-            "type": "integer"
-        },
-        {
-            "key": "DPC_DOC",
-            "title": "Date de prise en compte de l'ouverture du chantier",
-            "description": "Date (mois) de prise en compte (DPC) de l'ouverture du chantier",
-            "type": "integer"
-        },
-        {
-            "key": "DPC_DERN",
-            "title": "Date de dernière mise à jour des données",
-            "description": "Date (mois) (DPC) de dernière mise à jour des données",
-            "type": "integer"
-        },
-        {
-            "key": "APE_DEM",
-            "title": "Code d'activité principale de l'établissement",
-            "description": "Code d'activité principale de l'établissement d'un demandeur avéré en tant que personne morale",
-            "type": "string"
-        },
-        {
-            "key": "CJ_DEM",
-            "title": "Catégorie juridique d'un demandeur",
-            "description": "Catégorie juridique d'un demandeur avéré en tant que personne morale",
-            "type": "integer"
-        },
-        {
-            "key": "DENOM_DEM",
-            "title": "Dénomination du demandeur",
-            "description": "Dénomination d'un demandeur avéré en tant que personne morale",
-            "type": "string"
-        },
-        {
-            "key": "SIREN_DEM",
-            "title": "Numéro SIREN d'un demandeur",
-            "description": "Numéro SIREN d'un demandeur avéré en tant que personne morale",
-            "type": "string"
-        },
-        {
-            "key": "SIRET_DEM",
-            "title": "Numéro SIRET d'un demandeur",
-            "description": "Numéro SIRET d'un demandeur avéré en tant que personne morale",
-            "type": "string"
-        },
-        {
-            "key": "CODPOST_DEM",
-            "title": "Code postal du demandeur",
-            "description": "Code postal du demandeur",
-            "type": "string"
-        },
-        {
-            "key": "LOCALITE_DEM",
-            "title": "Localité du demandeur",
-            "description": "Localité du demandeur",
-            "type": "string"
-        },
-        {
-            "key": "REC_ARCHI",
-            "title": "Indicateur de recours à un architecte",
-            "description": "Indicateur de recours à un architecte",
-            "type": "boolean"
-        },
-        {
-            "key": "ADR_NUM_TER",
-            "title": "ADR_NUM_TER",
-            "description": "Numéro de voie du terrain",
-            "type": "string"
-        },
-        {
-            "key": "ADR_TYPEVOIE_TER",
-            "title": "ADR_TYPEVOIE_TER",
-            "description": "Type de voie du terrain",
-            "type": "string"
-        },
-        {
-            "key": "ADR_LIBVOIE_TER",
-            "title": "ADR_LIBVOIE_TER",
-            "description": "Libellé de la voie du terrain",
-            "type": "string"
-        },
-        {
-            "key": "ADR_LIEUDIT_TER",
-            "title": "ADR_LIEUDIT_TER",
-            "description": "Lieu-dit du terrain",
-            "type": "string"
-        },
-        {
-            "key": "ADR_LOCALITE_TER",
-            "title": "ADR_LOCALITE_TER",
-            "description": "Localité du terrain",
-            "type": "string"
-        },
-        {
-            "key": "ADR_CODPOST_TER",
-            "title": "ADR_CODPOST_TER",
-            "description": "Code postal du terrain",
-            "type": "string"
-        },
-        {
-            "key": "sec_cadastre1",
-            "title": "sec_cadastre1",
-            "description": "Section cadastrale 1",
-            "type": "string"
-        },
-        {
-            "key": "num_cadastre1",
-            "title": "num_cadastre1",
-            "description": "Numéro parcelle cadastrale 1",
-            "type": "string"
-        },
-        {
-            "key": "sec_cadastre2",
-            "title": "sec_cadastre2",
-            "description": "Section cadastrale 2",
-            "type": "string"
-        },
-        {
-            "key": "num_cadastre2",
-            "title": "num_cadastre2",
-            "description": "Numéro parcelle cadastrale 2",
-            "type": "string"
-        },
-        {
-            "key": "sec_cadastre3",
-            "title": "sec_cadastre3",
-            "description": "Section cadastrale 3",
-            "type": "string"
-        },
-        {
-            "key": "num_cadastre3",
-            "title": "num_cadastre3",
-            "description": "Numéro parcelle cadastrale 3",
-            "type": "string"
-        },
-        {
-            "key": "SUPERFICIE_TERRAIN",
-            "title": "SUPERFICIE_TERRAIN",
-            "description": "Superficie du terrain",
-            "type": "integer"
-        },
-        {
-            "key": "ZONE_OP",
-            "title": "Zone opératoire",
-            "description": "Code zone opératoire",
-            "type": "integer"
-        },
-		{
-			"key": "NATURE_PROJET",
-			"title": "NATURE_PROJET",
-			"description": "Code « nature du projet »",
-			"type": "string"
-		},
-		{
-            "key": "I_EXTENSION",
-            "title": "I_EXTENSION",
-            "description": "Indicateur d'extension",
-            "type": "string"
-        },
-        {
-            "key": "I_SURELEVATION",
-            "title": "I_SURELEVATION",
-            "description": "Indicateur de surélévation",
-            "type": "string"
-        },
-        {
-            "key": "I_NIVSUPP",
-            "title": "I_NIVSUPP",
-            "description": "Indicateur de création de niveau(x) supplémentaire(s)",
-            "type": "string"
-        },
-        {
-            "key": "NB_NIV_MAX",
-            "title": "NB_NIV_MAX",
-            "description": "Nombre de niveaux du bâtiment le plus élevé",
-			"type": "string"
-		},
-		{
-			"key": "NB_CHAMBRES",
-			"title": "Nombre de chambres (si foyer ou autres hébergement)",
-			"description": "Nombre de chambres (si foyer ou autres hébergement)",
-			"type": "string"
-		},
-		{
-			"key": "SURF_HAB_AVANT",
-			"title": "Surface de plancher de la destination avant travaux",
-			"description": "Surface de plancher de la destination 'Habitation' existante avant travaux",
-			"type": "string"
-		},
-		{
-			"key": "SURF_HAB_CREEE",
-			"title": "Surface de plancher de la destination nouvelle construite",
-			"description": "Surface de plancher de la destination 'Habitation' nouvelle construite",
-			"type": "string"
-		},
-		{
-			"key": "SURF_HAB_ISSUE_TRANSFO",
-			"title": "Surface de plancher de la destination créée par changement de destination",
-			"description": "Surface de plancher de la destination 'Habitation' créée par changement de destination",
-			"type": "string"
-		},
-		{
-			"key": "SURF_HAB_DEMOLIE",
-			"title": "Surface de plancher de la destination supprimée",
-			"description": "Surface de plancher de la destination 'Habitation' supprimée (démolie)",
-			"type": "string"
-		},
-		{
-			"key": "SURF_HAB_TRANSFORMEE",
-			"title": "Surface de plancher de la destination supprimée par changement de destination",
-			"description": "Surface de plancher de la destination 'Habitation' supprimée par changement de destination",
-			"type": "string"
-		},
-		{
-			"key": "SURF_LOC_AVANT",
-			"title": "Surface de plancher de locaux non résidentiels existante avant travaux",
-			"description": "Surface de plancher de locaux non résidentiels (i.e. autres que d'habitation) existante avant travaux",
-			"type": "string"
-		},
-		{
-			"key": "SURF_LOC_CREEE",
-			"title": "Surface de plancher de locaux non résidentiels nouvelle construite",
-			"description": "Surface de plancher de locaux non résidentiels (i.e. autres que d'habitation) nouvelle construite",
-			"type": "string"
-		},
-		{
-			"key": "SURF_LOC_ISSUE_TRANSFO",
-			"title": "Surface de plancher de locaux non résidentiels créée par changement de destination",
-			"description": "Surface de plancher de locaux non résidentiels (i.e. autres que d'habitation) créée par changement de destination",
-			"type": "string"
-		},
-		{
-			"key": "SURF_LOC_DEMOLIE",
-			"title": "Surface de plancher de locaux non résidentiels démolie",
-			"description": "Surface de plancher de locaux non résidentiels (i.e. autres que d'habitation) démolie",
-			"type": "string"
-		},
-		{
-			"key": "SURF_LOC_TRANSFORMEE",
-			"title": "Surface de plancher de locaux non résidentiels supprimée par changement de destination",
-			"description": "Surface de plancher de locaux non résidentiels (i.e. autres que d'habitation) supprimée par changement de destination",
-			"type": "string"
-		},
-		{
-			"key": "SURF_HEB_AVANT",
-			"title": "SURF_HEB_AVANT",
-			"description": "Surface de plancher de la destination 'Hébergement hôtelier' existante avant travaux",
-			"type": "string"
-		},
-		{
-			"key": "SURF_HEB_CREEE",
-			"title": "SURF_HEB_CREEE",
-			"description": "Surface de plancher de la destination ' Hébergement hôtelier ' nouvelle construite",
-			"type": "string"
-		},
-		{
-			"key": "SURF_HEB_ISSUE_TRANSFO",
-			"title": "SURF_HEB_ISSUE_TRANSFO",
-			"description": "Surface de plancher de la destination ' Hébergement hôtelier ' créée par changement de destination",
-			"type": "string"
-		},
-		{
-			"key": "SURF_HEB_DEMOLIE",
-			"title": "SURF_HEB_DEMOLIE",
-			"description": "Surface de plancher de la destination ' Hébergement hôtelier ' démolie",
-			"type": "string"
-		},
-		{
-			"key": "SURF_HEB_TRANSFORMEE",
-			"title": "SURF_HEB_TRANSFORMEE",
-			"description": "Surface de plancher de la destination ' Hébergement hôtelier ' supprimée par changement de destination",
-			"type": "string"
-		},
-		{
-			"key": "SURF_BUR_AVANT",
-			"title": "SURF_BUR_AVANT",
-			"description": "Surface de plancher de la destination ' Bureau ' existante avant travaux",
-			"type": "string"
-		},
-		{
-			"key": "SURF_BUR_CREEE",
-			"title": "SURF_BUR_CREEE",
-			"description": "Surface de plancher de la destination ' Bureau ' nouvelle construite",
-			"type": "string"
-		},
-		{
-			"key": "SURF_BUR_ISSUE_TRANSFO",
-			"title": "SURF_BUR_ISSUE_TRANSFO",
-			"description": "Surface de plancher de la destination ' Bureau ' créée par changement de destination",
-			"type": "string"
-		},
-		{
-			"key": "SURF_BUR_DEMOLIE",
-			"title": "SURF_BUR_DEMOLIE",
-			"description": "Surface de plancher de la destination ' Bureau ' démolie",
-			"type": "string"
-		},
-		{
-			"key": "SURF_BUR_TRANSFORMEE",
-			"title": "SURF_BUR_TRANSFORMEE",
-			"description": "Surface de plancher de la destination ' Bureau ' supprimée par changement de destination",
-			"type": "string"
-		},
-		{
-			"key": "SURF_COM_AVANT",
-			"title": "SURF_COM_AVANT",
-			"description": "Surface de plancher de la destination ' Commerce ' existante avant travaux",
-			"type": "string"
-		},
-		{
-			"key": "SURF_COM_CREEE",
-			"title": "SURF_COM_CREEE",
-			"description": "Surface de plancher de la destination ' Commerce ' nouvelle construite",
-			"type": "string"
-		},
-		{
-			"key": "SURF_COM_ISSUE_TRANSFO",
-			"title": "SURF_COM_ISSUE_TRANSFO",
-			"description": "Surface de plancher de la destination ' Commerce ' créée par changement de destination",
-			"type": "string"
-		},
-		{
-			"key": "SURF_COM_DEMOLIE",
-			"title": "SURF_COM_DEMOLIE",
-			"description": "Surface de plancher de la destination ' Commerce ' démolie",
-			"type": "string"
-		},
-		{
-			"key": "SURF_COM_TRANSFORMEE",
-			"title": "SURF_COM_TRANSFORMEE",
-			"description": "Surface de plancher de la destination ' Commerce ' supprimée par changement de destination",
-			"type": "string"
-		},
-		{
-			"key": "SURF_ART_AVANT",
-			"title": "SURF_ART_AVANT",
-			"description": "Surface de plancher de la destination ' Artisanat ' existante avant travaux",
-			"type": "string"
-		},
-		{
-			"key": "SURF_ART_CREEE",
-			"title": "SURF_ART_CREEE",
-			"description": "Surface de plancher de la destination ' Artisanat ' nouvelle construite",
-			"type": "string"
-		},
-		{
-			"key": "SURF_ART_ISSUE_TRANSFO",
-			"title": "SURF_ART_ISSUE_TRANSFO",
-			"description": "Surface de plancher de la destination ' Artisanat ' créée par changement de destination",
-			"type": "string"
-		},
-		{
-			"key": "SURF_ART_DEMOLIE",
-			"title": "SURF_ART_DEMOLIE",
-			"description": "Surface de plancher de la destination ' Artisanat ' démolie",
-			"type": "string"
-		},
-		{
-			"key": "SURF_ART_TRANSFORMEE",
-			"title": "SURF_ART_TRANSFORMEE",
-			"description": "Surface de plancher de la destination ' Artisanat ' supprimée par changement de destination",
-			"type": "string"
-		},
-		{
-			"key": "SURF_IND_AVANT",
-			"title": "SURF_IND_AVANT",
-			"description": "Surface de plancher de la destination ' Industrie ' existante avant travaux",
-			"type": "string"
-		},
-		{
-			"key": "SURF_IND_CREEE",
-			"title": "SURF_IND_CREEE",
-			"description": "Surface de plancher de la destination ' Industrie ' nouvelle construite",
-			"type": "string"
-		},
-		{
-			"key": "SURF_IND_ISSUE_TRANSFO",
-			"title": "SURF_IND_ISSUE_TRANSFO",
-			"description": "Surface de plancher de la destination ' Industrie ' créée par changement de destination",
-			"type": "string"
-		},
-		{
-			"key": "SURF_IND_DEMOLIE",
-			"title": "SURF_IND_DEMOLIE",
-			"description": "Surface de plancher de la destination ' Industrie ' démolie",
-			"type": "string"
-		},
-		{
-			"key": "SURF_IND_TRANSFORMEE",
-			"title": "SURF_IND_TRANSFORMEE",
-			"description": "Surface de plancher de la destination ' Industrie ' supprimée par changement de destination",
-			"type": "string"
-		},
-		{
-			"key": "SURF_AGR_AVANT",
-			"title": "SURF_AGR_AVANT",
-			"description": "Surface de plancher de la destination ' Exploitation agricole ou forestière ' existante avant travaux",
-			"type": "string"
-		},
-		{
-			"key": "SURF_AGR_CREEE",
-			"title": "SURF_AGR_CREEE",
-			"description": "Surface de plancher de la destination ' Exploitation agricole ou forestière ' nouvelle construite",
-			"type": "string"
-		},
-		{
-			"key": "SURF_AGR_ISSUE_TRANSFO",
-			"title": "SURF_AGR_ISSUE_TRANSFO",
-			"description": "Surface de plancher de la destination ' Exploitation agricole ou forestière ' créée par changement de destination",
-			"type": "string"
-		},
-		{
-			"key": "SURF_AGR_DEMOLIE",
-			"title": "SURF_AGR_DEMOLIE",
-			"description": "Surface de plancher de la destination ' Exploitation agricole ou forestière ' démolie",
-			"type": "string"
-		},
-		{
-			"key": "SURF_AGR_TRANSFORMEE",
-			"title": "SURF_AGR_TRANSFORMEE",
-			"description": "Surface de plancher de la destination ' Exploitation agricole ou forestière ' supprimée par changement de destination",
-			"type": "string"
-		},
-		{
-			"key": "SURF_ENT_AVANT",
-			"title": "SURF_ENT_AVANT",
-			"description": "Surface de plancher de la destination ' Entrepôt ' existante avant travaux",
-			"type": "string"
-		},
-		{
-			"key": "SURF_ENT_CREEE",
-			"title": "SURF_ENT_CREEE",
-			"description": "Surface de plancher de la destination ' Entrepôt ' nouvelle construite",
-			"type": "string"
-		},
-		{
-			"key": "SURF_ENT_ISSUE_TRANSFO",
-			"title": "SURF_ENT_ISSUE_TRANSFO",
-			"description": "Surface de plancher de la destination ' Entrepôt ' créée par changement de destination",
-			"type": "string"
-		},
-		{
-			"key": "SURF_ENT_DEMOLIE",
-			"title": "SURF_ENT_DEMOLIE",
-			"description": "Surface de plancher de la destination ' Entrepôt ' démolie",
-			"type": "string"
-		},
-		{
-			"key": "SURF_ENT_TRANSFORMEE",
-			"title": "SURF_ENT_TRANSFORMEE",
-			"description": "Surface de plancher de la destination ' Entrepôt ' supprimée par changement de destination",
-			"type": "string"
-		},
-		{
-			"key": "SURF_PUB_AVANT",
-			"title": "SURF_PUB_AVANT",
-			"description": "Surface de plancher de la destination ' Services publics ou d'intérêt collectif' existante avant travaux",
-			"type": "string"
-		},
-		{
-			"key": "SURF_PUB_CREEE",
-			"title": "SURF_PUB_CREEE",
-			"description": "Surface de plancher de la destination ' Services publics ou d'intérêt collectif ' nouvelle construite",
-			"type": "string"
-		},
-		{
-			"key": "SURF_PUB_ISSUE_TRANSFO",
-			"title": "SURF_PUB_ISSUE_TRANSFO",
-			"description": "Surface de plancher de la destination ' Services publics ou d'intérêt collectif ' créée par changement de destination",
-			"type": "string"
-		},
-		{
-			"key": "SURF_PUB_DEMOLIE",
-			"title": "SURF_PUB_DEMOLIE",
-			"description": "Surface de plancher de la destination ' Services publics ou d'intérêt collectif ' démolie",
-			"type": "string"
-		},
-		{
-			"key": "SURF_PUB_TRANSFORMEE",
-			"title": "SURF_PUB_TRANSFORMEE",
-			"description": "Surface de plancher de la destination ' Services publics ou d'intérêt collectif ' supprimée par changement de destination",
-			"type": "string"
-		},
-		{
-			"key": "TYPE_SERVICE_PUBLIC",
-			"title": "Type de service public ou d'intérêt collectif",
-			"description": "Type de service public ou d'intérêt collectif",
-			"type": "string"
-		},
-		{
-			"key": "latitude",
-            "title": "latitude",
-            "description": "Coordonné géographique qui permet de se situer par rapport à l'équateur",
-            "type": "number"
-        },
-        {
-            "key": "longitude",
-            "title": "longitude",
-            "description": "Coordonnée géographique qui permet de se situer par rapport au méridien de Greenwich",
-            "type": "number"
-        },
-        {
-            "key": "parcel_confidence",
-            "title": "parcel_confidence",
-            "description": "pourcentage de confiance concernant le code de la parcelle",
-            "type": "string"
-        },
-        {
-            "key": "parcelle",
-            "title": "Code de la parcelle",
-            "description": "Le code de la parcelle cadastrale est le numéro unique attribué par le Service du cadastre pour identifier une parcelle cadastrale au niveau national",
-            "type": "string"
-        }
-	]
-}
+[
+	{
+		"key": "REG",
+		"title": "Code de la région",
+		"description": "Code de la région du lieu des travaux",
+		"type": "string"
+	},
+	{
+		"key": "DEP",
+		"title": "Code du département",
+		"description": "Code du département du lieu des travaux",
+		"type": "string"
+	},
+	{
+		"key": "COMM",
+		"title": "Code de la commune",
+		"description": "Code de la commune du lieu des travaux",
+		"type": "string"
+	},
+	{
+		"key": "Type_DAU",
+		"title": "Demande d'autorisation d'urbanisme",
+		"description": "Type de DAU -- demande d'autorisation d'urbanisme (PC ou DP)",
+		"type": "string"
+	},
+	{
+		"key": "Num_DAU",
+		"title": "Numéro demande d'autorisation d'urbanisme",
+		"description": "Numéro d'enregistrement de la demande d'autorisation d'urbanisme",
+		"type": "string"
+	},
+	{
+		"key": "Etat_DAU",
+		"title": "Etat d'avancement du projet",
+		"description": "Etat d'avancement du projet",
+		"type": "string"
+	},
+	{
+		"key": "DATE_REELLE_AUTORISATION",
+		"title": "Date réelle d'autorisation initiale",
+		"description": "Date réelle d'autorisation initiale",
+		"type": "date"
+	},
+	{
+		"key": "DATE_REELLE_DOC",
+		"title": "Date réelle d'ouverture de chantier",
+		"description": "Date réelle d'ouverture de chantier",
+		"type": "date"
+	},
+	{
+		"key": "DATE_REELLE_DAACT",
+		"title": "Date réelle d'achèvement des travaux",
+		"description": "Date réelle d'achèvement des travaux",
+		"type": "date"
+	},
+	{
+		"key": "DPC_AUT",
+		"title": "Date de prise en compte de l'autorisation initiale",
+		"description": "Date (mois) de prise en compte (DPC) de l'autorisation initiale",
+		"type": "integer"
+	},
+	{
+		"key": "DPC_DOC",
+		"title": "Date de prise en compte de l'ouverture du chantier",
+		"description": "Date (mois) de prise en compte (DPC) de l'ouverture du chantier",
+		"type": "integer"
+	},
+	{
+		"key": "DPC_DERN",
+		"title": "Date de dernière mise à jour des données",
+		"description": "Date (mois) (DPC) de dernière mise à jour des données",
+		"type": "integer"
+	},
+	{
+		"key": "APE_DEM",
+		"title": "Code d'activité principale de l'établissement",
+		"description": "Code d'activité principale de l'établissement d'un demandeur avéré en tant que personne morale",
+		"type": "string"
+	},
+	{
+		"key": "CJ_DEM",
+		"title": "Catégorie juridique d'un demandeur",
+		"description": "Catégorie juridique d'un demandeur avéré en tant que personne morale",
+		"type": "integer"
+	},
+	{
+		"key": "DENOM_DEM",
+		"title": "Dénomination du demandeur",
+		"description": "Dénomination d'un demandeur avéré en tant que personne morale",
+		"type": "string"
+	},
+	{
+		"key": "SIREN_DEM",
+		"title": "Numéro SIREN d'un demandeur",
+		"description": "Numéro SIREN d'un demandeur avéré en tant que personne morale",
+		"type": "string"
+	},
+	{
+		"key": "SIRET_DEM",
+		"title": "Numéro SIRET d'un demandeur",
+		"description": "Numéro SIRET d'un demandeur avéré en tant que personne morale",
+		"type": "string"
+	},
+	{
+		"key": "CODPOST_DEM",
+		"title": "Code postal du demandeur",
+		"description": "Code postal du demandeur",
+		"type": "string"
+	},
+	{
+		"key": "LOCALITE_DEM",
+		"title": "Localité du demandeur",
+		"description": "Localité du demandeur",
+		"type": "string"
+	},
+	{
+		"key": "REC_ARCHI",
+		"title": "Indicateur de recours à un architecte",
+		"description": "Indicateur de recours à un architecte",
+		"type": "boolean"
+	},
+	{
+		"key": "ADR_NUM_TER",
+		"title": "ADR_NUM_TER",
+		"description": "Numéro de voie du terrain",
+		"type": "string"
+	},
+	{
+		"key": "ADR_TYPEVOIE_TER",
+		"title": "ADR_TYPEVOIE_TER",
+		"description": "Type de voie du terrain",
+		"type": "string"
+	},
+	{
+		"key": "ADR_LIBVOIE_TER",
+		"title": "ADR_LIBVOIE_TER",
+		"description": "Libellé de la voie du terrain",
+		"type": "string"
+	},
+	{
+		"key": "ADR_LIEUDIT_TER",
+		"title": "ADR_LIEUDIT_TER",
+		"description": "Lieu-dit du terrain",
+		"type": "string"
+	},
+	{
+		"key": "ADR_LOCALITE_TER",
+		"title": "ADR_LOCALITE_TER",
+		"description": "Localité du terrain",
+		"type": "string"
+	},
+	{
+		"key": "ADR_CODPOST_TER",
+		"title": "ADR_CODPOST_TER",
+		"description": "Code postal du terrain",
+		"type": "string"
+	},
+	{
+		"key": "sec_cadastre1",
+		"title": "sec_cadastre1",
+		"description": "Section cadastrale 1",
+		"type": "string"
+	},
+	{
+		"key": "num_cadastre1",
+		"title": "num_cadastre1",
+		"description": "Numéro parcelle cadastrale 1",
+		"type": "string"
+	},
+	{
+		"key": "sec_cadastre2",
+		"title": "sec_cadastre2",
+		"description": "Section cadastrale 2",
+		"type": "string"
+	},
+	{
+		"key": "num_cadastre2",
+		"title": "num_cadastre2",
+		"description": "Numéro parcelle cadastrale 2",
+		"type": "string"
+	},
+	{
+		"key": "sec_cadastre3",
+		"title": "sec_cadastre3",
+		"description": "Section cadastrale 3",
+		"type": "string"
+	},
+	{
+		"key": "num_cadastre3",
+		"title": "num_cadastre3",
+		"description": "Numéro parcelle cadastrale 3",
+		"type": "string"
+	},
+	{
+		"key": "SUPERFICIE_TERRAIN",
+		"title": "SUPERFICIE_TERRAIN",
+		"description": "Superficie du terrain",
+		"type": "integer"
+	},
+	{
+		"key": "ZONE_OP",
+		"title": "Zone opératoire",
+		"description": "Code zone opératoire",
+		"type": "integer"
+	},
+	{
+		"key": "NATURE_PROJET",
+		"title": "NATURE_PROJET",
+		"description": "Code « nature du projet »",
+		"type": "string"
+	},
+	{
+		"key": "I_EXTENSION",
+		"title": "I_EXTENSION",
+		"description": "Indicateur d'extension",
+		"type": "string"
+	},
+	{
+		"key": "I_SURELEVATION",
+		"title": "I_SURELEVATION",
+		"description": "Indicateur de surélévation",
+		"type": "string"
+	},
+	{
+		"key": "I_NIVSUPP",
+		"title": "I_NIVSUPP",
+		"description": "Indicateur de création de niveau(x) supplémentaire(s)",
+		"type": "string"
+	},
+	{
+		"key": "NB_NIV_MAX",
+		"title": "NB_NIV_MAX",
+		"description": "Nombre de niveaux du bâtiment le plus élevé",
+		"type": "string"
+	},
+	{
+		"key": "NB_CHAMBRES",
+		"title": "Nombre de chambres (si foyer ou autres hébergement)",
+		"description": "Nombre de chambres (si foyer ou autres hébergement)",
+		"type": "string"
+	},
+	{
+		"key": "SURF_HAB_AVANT",
+		"title": "Surface de plancher de la destination avant travaux",
+		"description": "Surface de plancher de la destination 'Habitation' existante avant travaux",
+		"type": "string"
+	},
+	{
+		"key": "SURF_HAB_CREEE",
+		"title": "Surface de plancher de la destination nouvelle construite",
+		"description": "Surface de plancher de la destination 'Habitation' nouvelle construite",
+		"type": "string"
+	},
+	{
+		"key": "SURF_HAB_ISSUE_TRANSFO",
+		"title": "Surface de plancher de la destination créée par changement de destination",
+		"description": "Surface de plancher de la destination 'Habitation' créée par changement de destination",
+		"type": "string"
+	},
+	{
+		"key": "SURF_HAB_DEMOLIE",
+		"title": "Surface de plancher de la destination supprimée",
+		"description": "Surface de plancher de la destination 'Habitation' supprimée (démolie)",
+		"type": "string"
+	},
+	{
+		"key": "SURF_HAB_TRANSFORMEE",
+		"title": "Surface de plancher de la destination supprimée par changement de destination",
+		"description": "Surface de plancher de la destination 'Habitation' supprimée par changement de destination",
+		"type": "string"
+	},
+	{
+		"key": "SURF_LOC_AVANT",
+		"title": "Surface de plancher de locaux non résidentiels existante avant travaux",
+		"description": "Surface de plancher de locaux non résidentiels (i.e. autres que d'habitation) existante avant travaux",
+		"type": "string"
+	},
+	{
+		"key": "SURF_LOC_CREEE",
+		"title": "Surface de plancher de locaux non résidentiels nouvelle construite",
+		"description": "Surface de plancher de locaux non résidentiels (i.e. autres que d'habitation) nouvelle construite",
+		"type": "string"
+	},
+	{
+		"key": "SURF_LOC_ISSUE_TRANSFO",
+		"title": "Surface de plancher de locaux non résidentiels créée par changement de destination",
+		"description": "Surface de plancher de locaux non résidentiels (i.e. autres que d'habitation) créée par changement de destination",
+		"type": "string"
+	},
+	{
+		"key": "SURF_LOC_DEMOLIE",
+		"title": "Surface de plancher de locaux non résidentiels démolie",
+		"description": "Surface de plancher de locaux non résidentiels (i.e. autres que d'habitation) démolie",
+		"type": "string"
+	},
+	{
+		"key": "SURF_LOC_TRANSFORMEE",
+		"title": "Surface de plancher de locaux non résidentiels supprimée par changement de destination",
+		"description": "Surface de plancher de locaux non résidentiels (i.e. autres que d'habitation) supprimée par changement de destination",
+		"type": "string"
+	},
+	{
+		"key": "SURF_HEB_AVANT",
+		"title": "SURF_HEB_AVANT",
+		"description": "Surface de plancher de la destination 'Hébergement hôtelier' existante avant travaux",
+		"type": "string"
+	},
+	{
+		"key": "SURF_HEB_CREEE",
+		"title": "SURF_HEB_CREEE",
+		"description": "Surface de plancher de la destination ' Hébergement hôtelier ' nouvelle construite",
+		"type": "string"
+	},
+	{
+		"key": "SURF_HEB_ISSUE_TRANSFO",
+		"title": "SURF_HEB_ISSUE_TRANSFO",
+		"description": "Surface de plancher de la destination ' Hébergement hôtelier ' créée par changement de destination",
+		"type": "string"
+	},
+	{
+		"key": "SURF_HEB_DEMOLIE",
+		"title": "SURF_HEB_DEMOLIE",
+		"description": "Surface de plancher de la destination ' Hébergement hôtelier ' démolie",
+		"type": "string"
+	},
+	{
+		"key": "SURF_HEB_TRANSFORMEE",
+		"title": "SURF_HEB_TRANSFORMEE",
+		"description": "Surface de plancher de la destination ' Hébergement hôtelier ' supprimée par changement de destination",
+		"type": "string"
+	},
+	{
+		"key": "SURF_BUR_AVANT",
+		"title": "SURF_BUR_AVANT",
+		"description": "Surface de plancher de la destination ' Bureau ' existante avant travaux",
+		"type": "string"
+	},
+	{
+		"key": "SURF_BUR_CREEE",
+		"title": "SURF_BUR_CREEE",
+		"description": "Surface de plancher de la destination ' Bureau ' nouvelle construite",
+		"type": "string"
+	},
+	{
+		"key": "SURF_BUR_ISSUE_TRANSFO",
+		"title": "SURF_BUR_ISSUE_TRANSFO",
+		"description": "Surface de plancher de la destination ' Bureau ' créée par changement de destination",
+		"type": "string"
+	},
+	{
+		"key": "SURF_BUR_DEMOLIE",
+		"title": "SURF_BUR_DEMOLIE",
+		"description": "Surface de plancher de la destination ' Bureau ' démolie",
+		"type": "string"
+	},
+	{
+		"key": "SURF_BUR_TRANSFORMEE",
+		"title": "SURF_BUR_TRANSFORMEE",
+		"description": "Surface de plancher de la destination ' Bureau ' supprimée par changement de destination",
+		"type": "string"
+	},
+	{
+		"key": "SURF_COM_AVANT",
+		"title": "SURF_COM_AVANT",
+		"description": "Surface de plancher de la destination ' Commerce ' existante avant travaux",
+		"type": "string"
+	},
+	{
+		"key": "SURF_COM_CREEE",
+		"title": "SURF_COM_CREEE",
+		"description": "Surface de plancher de la destination ' Commerce ' nouvelle construite",
+		"type": "string"
+	},
+	{
+		"key": "SURF_COM_ISSUE_TRANSFO",
+		"title": "SURF_COM_ISSUE_TRANSFO",
+		"description": "Surface de plancher de la destination ' Commerce ' créée par changement de destination",
+		"type": "string"
+	},
+	{
+		"key": "SURF_COM_DEMOLIE",
+		"title": "SURF_COM_DEMOLIE",
+		"description": "Surface de plancher de la destination ' Commerce ' démolie",
+		"type": "string"
+	},
+	{
+		"key": "SURF_COM_TRANSFORMEE",
+		"title": "SURF_COM_TRANSFORMEE",
+		"description": "Surface de plancher de la destination ' Commerce ' supprimée par changement de destination",
+		"type": "string"
+	},
+	{
+		"key": "SURF_ART_AVANT",
+		"title": "SURF_ART_AVANT",
+		"description": "Surface de plancher de la destination ' Artisanat ' existante avant travaux",
+		"type": "string"
+	},
+	{
+		"key": "SURF_ART_CREEE",
+		"title": "SURF_ART_CREEE",
+		"description": "Surface de plancher de la destination ' Artisanat ' nouvelle construite",
+		"type": "string"
+	},
+	{
+		"key": "SURF_ART_ISSUE_TRANSFO",
+		"title": "SURF_ART_ISSUE_TRANSFO",
+		"description": "Surface de plancher de la destination ' Artisanat ' créée par changement de destination",
+		"type": "string"
+	},
+	{
+		"key": "SURF_ART_DEMOLIE",
+		"title": "SURF_ART_DEMOLIE",
+		"description": "Surface de plancher de la destination ' Artisanat ' démolie",
+		"type": "string"
+	},
+	{
+		"key": "SURF_ART_TRANSFORMEE",
+		"title": "SURF_ART_TRANSFORMEE",
+		"description": "Surface de plancher de la destination ' Artisanat ' supprimée par changement de destination",
+		"type": "string"
+	},
+	{
+		"key": "SURF_IND_AVANT",
+		"title": "SURF_IND_AVANT",
+		"description": "Surface de plancher de la destination ' Industrie ' existante avant travaux",
+		"type": "string"
+	},
+	{
+		"key": "SURF_IND_CREEE",
+		"title": "SURF_IND_CREEE",
+		"description": "Surface de plancher de la destination ' Industrie ' nouvelle construite",
+		"type": "string"
+	},
+	{
+		"key": "SURF_IND_ISSUE_TRANSFO",
+		"title": "SURF_IND_ISSUE_TRANSFO",
+		"description": "Surface de plancher de la destination ' Industrie ' créée par changement de destination",
+		"type": "string"
+	},
+	{
+		"key": "SURF_IND_DEMOLIE",
+		"title": "SURF_IND_DEMOLIE",
+		"description": "Surface de plancher de la destination ' Industrie ' démolie",
+		"type": "string"
+	},
+	{
+		"key": "SURF_IND_TRANSFORMEE",
+		"title": "SURF_IND_TRANSFORMEE",
+		"description": "Surface de plancher de la destination ' Industrie ' supprimée par changement de destination",
+		"type": "string"
+	},
+	{
+		"key": "SURF_AGR_AVANT",
+		"title": "SURF_AGR_AVANT",
+		"description": "Surface de plancher de la destination ' Exploitation agricole ou forestière ' existante avant travaux",
+		"type": "string"
+	},
+	{
+		"key": "SURF_AGR_CREEE",
+		"title": "SURF_AGR_CREEE",
+		"description": "Surface de plancher de la destination ' Exploitation agricole ou forestière ' nouvelle construite",
+		"type": "string"
+	},
+	{
+		"key": "SURF_AGR_ISSUE_TRANSFO",
+		"title": "SURF_AGR_ISSUE_TRANSFO",
+		"description": "Surface de plancher de la destination ' Exploitation agricole ou forestière ' créée par changement de destination",
+		"type": "string"
+	},
+	{
+		"key": "SURF_AGR_DEMOLIE",
+		"title": "SURF_AGR_DEMOLIE",
+		"description": "Surface de plancher de la destination ' Exploitation agricole ou forestière ' démolie",
+		"type": "string"
+	},
+	{
+		"key": "SURF_AGR_TRANSFORMEE",
+		"title": "SURF_AGR_TRANSFORMEE",
+		"description": "Surface de plancher de la destination ' Exploitation agricole ou forestière ' supprimée par changement de destination",
+		"type": "string"
+	},
+	{
+		"key": "SURF_ENT_AVANT",
+		"title": "SURF_ENT_AVANT",
+		"description": "Surface de plancher de la destination ' Entrepôt ' existante avant travaux",
+		"type": "string"
+	},
+	{
+		"key": "SURF_ENT_CREEE",
+		"title": "SURF_ENT_CREEE",
+		"description": "Surface de plancher de la destination ' Entrepôt ' nouvelle construite",
+		"type": "string"
+	},
+	{
+		"key": "SURF_ENT_ISSUE_TRANSFO",
+		"title": "SURF_ENT_ISSUE_TRANSFO",
+		"description": "Surface de plancher de la destination ' Entrepôt ' créée par changement de destination",
+		"type": "string"
+	},
+	{
+		"key": "SURF_ENT_DEMOLIE",
+		"title": "SURF_ENT_DEMOLIE",
+		"description": "Surface de plancher de la destination ' Entrepôt ' démolie",
+		"type": "string"
+	},
+	{
+		"key": "SURF_ENT_TRANSFORMEE",
+		"title": "SURF_ENT_TRANSFORMEE",
+		"description": "Surface de plancher de la destination ' Entrepôt ' supprimée par changement de destination",
+		"type": "string"
+	},
+	{
+		"key": "SURF_PUB_AVANT",
+		"title": "SURF_PUB_AVANT",
+		"description": "Surface de plancher de la destination ' Services publics ou d'intérêt collectif' existante avant travaux",
+		"type": "string"
+	},
+	{
+		"key": "SURF_PUB_CREEE",
+		"title": "SURF_PUB_CREEE",
+		"description": "Surface de plancher de la destination ' Services publics ou d'intérêt collectif ' nouvelle construite",
+		"type": "string"
+	},
+	{
+		"key": "SURF_PUB_ISSUE_TRANSFO",
+		"title": "SURF_PUB_ISSUE_TRANSFO",
+		"description": "Surface de plancher de la destination ' Services publics ou d'intérêt collectif ' créée par changement de destination",
+		"type": "string"
+	},
+	{
+		"key": "SURF_PUB_DEMOLIE",
+		"title": "SURF_PUB_DEMOLIE",
+		"description": "Surface de plancher de la destination ' Services publics ou d'intérêt collectif ' démolie",
+		"type": "string"
+	},
+	{
+		"key": "SURF_PUB_TRANSFORMEE",
+		"title": "SURF_PUB_TRANSFORMEE",
+		"description": "Surface de plancher de la destination ' Services publics ou d'intérêt collectif ' supprimée par changement de destination",
+		"type": "string"
+	},
+	{
+		"key": "TYPE_SERVICE_PUBLIC",
+		"title": "Type de service public ou d'intérêt collectif",
+		"description": "Type de service public ou d'intérêt collectif",
+		"type": "string"
+	},
+	{
+		"key": "latitude",
+		"title": "latitude",
+		"description": "Coordonné géographique qui permet de se situer par rapport à l'équateur",
+		"type": "number"
+	},
+	{
+		"key": "longitude",
+		"title": "longitude",
+		"description": "Coordonnée géographique qui permet de se situer par rapport au méridien de Greenwich",
+		"type": "number"
+	},
+	{
+		"key": "parcel_confidence",
+		"title": "parcel_confidence",
+		"description": "pourcentage de confiance concernant le code de la parcelle",
+		"type": "string"
+	},
+	{
+		"key": "parcelle",
+		"title": "Code de la parcelle",
+		"description": "Le code de la parcelle cadastrale est le numéro unique attribué par le Service du cadastre pour identifier une parcelle cadastrale au niveau national",
+		"type": "string"
+	}
+]
