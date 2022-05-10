@@ -18,13 +18,13 @@
         "type": "string"
     },
     {
-        "key": "Num_PA",
+        "key": "Num_PD",
         "title": "Numéro du permis de démolir",
         "description": "Numéro d'enregistrement du permis de démolir (PD)",
         "type": "string"
     },
     {
-        "key": "Etat_PA",
+        "key": "Etat_PD",
         "title": "Etat d'avancement du projet",
         "description": "Etat d'avancement du projet",
         "type": "integer"
