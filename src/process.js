@@ -60,7 +60,7 @@ async function geocode (arr, axios, log) {
   return response.data.substring(response.data.indexOf('\n') + 1)
 }
 
-async function getParcel (array, stats, axios, log) {
+async function getParcel (array, stats, processingConfig, axios, log) {
   let stringRequest = ''
   let a = [...new Set(array.map(elem => elem.num_cadastre1.padStart(4, '0')))]
   if (a.length > 1400) {
@@ -90,18 +90,18 @@ async function getParcel (array, stats, axios, log) {
   }
   // console.log(param.params.qs)
 
-  const startTime = new Date().getTime()
-  const nbParcels = (await axios.get('https://staging-koumoul.com/data-fair/api/v1/datasets/cadastre-parcelles-coords/lines', param)).data.total
+  // const startTime = new Date().getTime()
+  const nbParcels = (await axios.get(processingConfig.urlParcelData.href + '/lines', param)).data.total
 
-  const end = new Date().getTime()
-  log.info(`Temps requête nbParcels : ${end - startTime} ms`)
+  // const end = new Date().getTime()
+  // log.info(`Temps requête nbParcels : ${end - startTime} ms`)
   // console.log(nbParcels)
 
   param.params.size = nbParcels
   if (param.params.size > 10000) param.params.size = 10000
 
   const start2 = new Date().getTime()
-  let parcels = (await axios.get('https://staging-koumoul.com/data-fair/api/v1/datasets/cadastre-parcelles-coords/lines', param)).data
+  let parcels = (await axios.get(processingConfig.urlParcelData.href + '/lines', param)).data
 
   const commParcels = parcels.results
   let next = parcels.next
@@ -113,12 +113,12 @@ async function getParcel (array, stats, axios, log) {
   }
 
   const end2 = new Date().getTime()
-  log.info(`Temps requête 2 : ${end2 - start2} ms`)
+  // log.info(`Temps requête 2 : ${end2 - start2} ms`)
   stats.moyReq += end2 - start2
   stats.sum += 1
 
   const ret = []
-  const startTraitement = new Date().getTime()
+  // const startTraitement = new Date().getTime()
   for (const input of array) {
     input.geocoding = {}
     input.geocoding.lat = input.latitude
@@ -244,8 +244,8 @@ async function getParcel (array, stats, axios, log) {
     delete input.geocoding
     ret.push(input)
   }
-  const endTraitement = new Date().getTime()
-  log.info(`Temps traitement : ${endTraitement - startTraitement} ms`)
+  // const endTraitement = new Date().getTime()
+  // log.info(`Temps traitement : ${endTraitement - startTraitement} ms`)
 
   if (!stats.header) {
     stats.header = true
@@ -263,7 +263,14 @@ function compare (a, b) {
 }
 
 async function fusion (a, b, option, log) {
-  if (b === undefined) return fs.createReadStream(a, { objectMode: true }).pipe(csv.parse({ columns: true, delimiter: ';' })).pipe(filter(function (data) { return option.includes(parseInt(data.DEP)) }, { objectMode: true }))
+  if (b === undefined) {
+    log.step('Traitement')
+    return fs.createReadStream(a, { objectMode: true })
+      .pipe(csv.parse({ columns: true, delimiter: ';' }))
+      .pipe(filter(function (data) {
+        return option.includes(parseInt(data.DEP))
+      }, { objectMode: true }))
+  }
 
   log.step(`Fusion de ${a} et ${b}. Option : ${option}`)
 
@@ -292,6 +299,7 @@ async function fusion (a, b, option, log) {
       .pipe(csv.parse({ columns: true, delimiter: ';' }))
       .pipe(filter(function (data) { return option.includes(parseInt(data.DEP)) }, { objectMode: true }))
 
+  log.step('Traitement')
   return mergeSortStream(f1, f2, compare)
 }
 
@@ -342,8 +350,8 @@ const extend = async (processingConfig, axios, log) => {
           batchComm.push(obj)
           currComm = obj.COMM
         } else if (batchComm.length > 0) {
-          log.step(`Traitement de ${batchComm.length} parcelle(s) dans la commune ${currComm}`, '')
-          const result = await getParcel(batchComm, stats, axios, log)
+          log.info(`Traitement de ${batchComm.length} parcelle(s) dans la commune ${currComm}`, '')
+          const result = await getParcel(batchComm, stats, processingConfig, axios, log)
           currComm = obj.COMM
           batchComm.length = 0
           batchComm.push(obj)
@@ -353,8 +361,8 @@ const extend = async (processingConfig, axios, log) => {
       },
       flush: async (callback) => {
         if (batchComm.length > 0) {
-          log.step(`Traitement de ${batchComm.length} parcelle(s) dans la commune ${currComm}`, '')
-          const result = await getParcel(batchComm, stats, axios, log)
+          log.info(`Traitement de ${batchComm.length} parcelle(s) dans la commune ${currComm}`, '')
+          const result = await getParcel(batchComm, stats, processingConfig, axios, log)
           callback(null, result)
         }
       }
@@ -366,7 +374,7 @@ const extend = async (processingConfig, axios, log) => {
   const sum = stats.sur + stats.geocode + stats.premier + stats.erreur
   log.step('Fin du traitement')
   log.info(`Sûr : ${Math.round(stats.sur * 100 / sum)}%, Géocodé : ${Math.round(stats.geocode * 100 / sum)}%, Géododé peu précis : ${Math.round(stats.premier * 100 / sum)}%, Non défini : ${Math.round(stats.erreur * 100 / sum)}%, Total : ${sum}`)
-  log.info(`Moy requête 2 : ${Math.round(stats.moyReq / stats.sum)} ms`, '')
+  log.info(`Moyenne requête parcelles : ${Math.round(stats.moyReq / stats.sum)} ms`)
 }
 
 module.exports = async (processingConfig, axios, log) => {

@@ -42,7 +42,10 @@ describe('Station service processing', () => {
         title: 'Sitadel - test'
       },
       departements: [56],
-      processFile: 'demolir'
+      processFile: 'demolir',
+      urlParcelData: {
+        href: config.parcelsUrl
+      }
     }
 
     const log = {
