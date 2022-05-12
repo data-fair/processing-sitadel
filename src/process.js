@@ -88,7 +88,6 @@ async function getParcel (array, globalStats, processingConfig, axios, log) {
     qs: `code:(/${array[0].COMM}.{9}/ AND (${stringRequest}))`,
     size: 10000
   }
-  log.info('Récupération des coordonnées des parcelles candidates', '')
 
   const start = new Date().getTime()
   let parcels = (await axios.get(processingConfig.urlParcelData.href + '/lines', { params })).data
@@ -99,7 +98,6 @@ async function getParcel (array, globalStats, processingConfig, axios, log) {
     commParcels.push(...parcels.results)
   }
   const duration = new Date().getTime() - start
-  log.info(`Récupération des coordonnées de ${commParcels.length} parcelles en ${duration.toLocaleString('fr')} ms`, '')
 
   globalStats.moyReq += duration
   globalStats.sum += 1
@@ -239,7 +237,8 @@ async function getParcel (array, globalStats, processingConfig, axios, log) {
   // const endTraitement = new Date().getTime()
   // log.info(`Temps traitement : ${endTraitement - startTraitement} ms`)
   const sum = stats.sur + stats.geocode + stats.premier + stats.erreur
-  log.info(`${ret.length} éléments, Sûr : ${Math.round(stats.sur * 100 / sum)}%, Géocodé : ${Math.round(stats.geocode * 100 / sum)}%, Géododé peu précis : ${Math.round(stats.premier * 100 / sum)}%, Non défini : ${Math.round(stats.erreur * 100 / sum)}%, Total : ${sum}`)
+
+  log.info(`Commune ${array[0].COMM}, ${array.length} parcelle(s), ${commParcels.length} récupérées en ${duration.toLocaleString('fr')} ms, Sûr : ${Math.round(stats.sur * 100 / sum)}%, Géocodé : ${Math.round(stats.geocode * 100 / sum)}%, Géododé peu précis : ${Math.round(stats.premier * 100 / sum)}%, Non défini : ${Math.round(stats.erreur * 100 / sum)}%`)
   if (!globalStats.header) {
     globalStats.header = true
     return csvSync.stringify(ret, { header: true })
@@ -347,7 +346,6 @@ module.exports = async (processingConfig, axios, log) => {
           batchComm.push(obj)
           currComm = obj.COMM
         } else if (batchComm.length > 0) {
-          log.info(`Traitement de ${batchComm.length} parcelle(s) dans la commune ${currComm}`, '')
           const result = await getParcel(batchComm, stats, processingConfig, axios, log)
           currComm = obj.COMM
           batchComm.length = 0
@@ -358,7 +356,6 @@ module.exports = async (processingConfig, axios, log) => {
       },
       flush: async (callback) => {
         if (batchComm.length > 0) {
-          log.info(`Traitement de ${batchComm.length} parcelle(s) dans la commune ${currComm}`, '')
           const result = await getParcel(batchComm, stats, processingConfig, axios, log)
           callback(null, result)
         }
