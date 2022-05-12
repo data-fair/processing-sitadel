@@ -3,25 +3,36 @@
 		"key": "REG",
 		"title": "Code de la région",
 		"description": "Code de la région du lieu des travaux",
-		"type": "string"
+		"type": "string",
+		"x-refersTo": "http://rdf.insee.fr/def/geo#codeRegion"
 	},
 	{
 		"key": "DEP",
 		"title": "Code du département",
 		"description": "Code du département du lieu des travaux",
-		"type": "string"
+		"type": "string",
+		"x-refersTo": "http://rdf.insee.fr/def/geo#codeDepartement"
 	},
 	{
 		"key": "COMM",
-		"title": "Code de la commune",
+		"title": "Code INSEE de la commune",
 		"description": "Code de la commune du lieu des travaux",
-		"type": "string"
+		"type": "string",
+		"x-refersTo": "http://rdf.insee.fr/def/geo#codeCommune"
 	},
 	{
 		"key": "Type_DAU",
 		"title": "Demande d'autorisation d'urbanisme",
 		"description": "Type de DAU -- demande d'autorisation d'urbanisme (PC ou DP)",
-		"type": "string"
+		"type": "string",
+		"x-labels": {
+			"PC": "Permis de construire",
+			"DP": "Déclaration Préalable"
+		},
+		"enum": [
+			"PC",
+			"DP"
+		]
 	},
 	{
 		"key": "Num_DAU",
@@ -33,7 +44,20 @@
 		"key": "Etat_DAU",
 		"title": "Etat d'avancement du projet",
 		"description": "Etat d'avancement du projet",
-		"type": "string"
+		"type": "string",
+		"ignoreDetection": true,
+		"x-labels": {
+			"2": "Autorisé",
+			"4": "Annulé",
+			"5": "Commencé",
+			"6": "Terminé"
+		},
+		"enum": [
+			"2",
+			"6",
+			"4",
+			"5"
+		]
 	},
 	{
 		"key": "DATE_REELLE_AUTORISATION",
@@ -93,13 +117,15 @@
 		"key": "SIREN_DEM",
 		"title": "Numéro SIREN d'un demandeur",
 		"description": "Numéro SIREN d'un demandeur avéré en tant que personne morale",
-		"type": "string"
+		"type": "string",
+		"x-refersTo": "http://dbpedia.org/ontology/siren"
 	},
 	{
 		"key": "SIRET_DEM",
 		"title": "Numéro SIRET d'un demandeur",
 		"description": "Numéro SIRET d'un demandeur avéré en tant que personne morale",
-		"type": "string"
+		"type": "string",
+		"x-refersTo": "http://www.datatourisme.fr/ontology/core/1.0/#siret"
 	},
 	{
 		"key": "CODPOST_DEM",
@@ -153,7 +179,8 @@
 		"key": "ADR_CODPOST_TER",
 		"title": "ADR_CODPOST_TER",
 		"description": "Code postal du terrain",
-		"type": "string"
+		"type": "string",
+		"x-refersTo": "http://schema.org/postalCode"
 	},
 	{
 		"key": "sec_cadastre1",
@@ -201,31 +228,53 @@
 		"key": "ZONE_OP",
 		"title": "Zone opératoire",
 		"description": "Code zone opératoire",
-		"type": "integer"
+		"type": "string",
+		"ignoreDetection": true,
+		"x-labels": {
+			"1": "Lotissement",
+			"2": "Zone d'aménagement concerté",
+			"3": "Association foncière urbaine",
+			"4": "Hors zone ou inconnu"
+		},
+		"enum": [
+			"1",
+			"2",
+			"3",
+			"4"
+		]
 	},
 	{
 		"key": "NATURE_PROJET",
-		"title": "NATURE_PROJET",
+		"title": "Nature du projet",
 		"description": "Code « nature du projet »",
-		"type": "string"
+		"type": "string",
+		"ignoreDetection": true,
+		"x-labels": {
+			"1": "Nouvelle construction",
+			"2": "Travaux sur construction existante"
+		},
+		"enum": [
+			"1",
+			"2"
+		]
 	},
 	{
 		"key": "I_EXTENSION",
-		"title": "I_EXTENSION",
+		"title": "Indicateur d'extension",
 		"description": "Indicateur d'extension",
-		"type": "string"
+		"type": "boolean"
 	},
 	{
 		"key": "I_SURELEVATION",
-		"title": "I_SURELEVATION",
+		"title": "Indicateur de surélévation",
 		"description": "Indicateur de surélévation",
-		"type": "string"
+		"type": "boolean"
 	},
 	{
 		"key": "I_NIVSUPP",
-		"title": "I_NIVSUPP",
+		"title": "Indicateur de création de niveau(x)",
 		"description": "Indicateur de création de niveau(x) supplémentaire(s)",
-		"type": "string"
+		"type": "boolean"
 	},
 	{
 		"key": "NB_NIV_MAX",
@@ -543,19 +592,42 @@
 		"key": "TYPE_SERVICE_PUBLIC",
 		"title": "Type de service public ou d'intérêt collectif",
 		"description": "Type de service public ou d'intérêt collectif",
-		"type": "string"
+		"type": "string",
+		"ignoreDetection": true,
+		"x-labels": {
+			"1": "Transport",
+			"2": "Enseignement et recherche",
+			"3": "Santé",
+			"4": "Action  sociale",
+			"5": "Ouvrage spécial",
+			"6": "Culture et loisir",
+			"7": "Non rempli",
+			"8": "Plusieurs types"
+		},
+		"enum": [
+			"1",
+			"2",
+			"3",
+			"4",
+			"5",
+			"6",
+			"7",
+			"8"
+		]
 	},
 	{
 		"key": "latitude",
 		"title": "latitude",
 		"description": "Coordonné géographique qui permet de se situer par rapport à l'équateur",
-		"type": "number"
+		"type": "number",
+		"x-refersTo": "http://schema.org/latitude"
 	},
 	{
 		"key": "longitude",
 		"title": "longitude",
 		"description": "Coordonnée géographique qui permet de se situer par rapport au méridien de Greenwich",
-		"type": "number"
+		"type": "number",
+		"x-refersTo": "http://schema.org/longitude"
 	},
 	{
 		"key": "parcel_confidence",
@@ -567,6 +639,7 @@
 		"key": "parcelle",
 		"title": "Code de la parcelle",
 		"description": "Le code de la parcelle cadastrale est le numéro unique attribué par le Service du cadastre pour identifier une parcelle cadastrale au niveau national",
-		"type": "string"
+		"type": "string",
+		"x-refersTo": "http://dbpedia.org/ontology/codeLandRegistry"
 	}
 ]

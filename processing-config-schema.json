@@ -38,6 +38,7 @@
     }]
   }, {
     "title": "Paramètres",
+    "required": ["urlParcelData"],
     "properties": {
       "clearFiles": {
         "title": "supprimer les fichiers téléchargés",

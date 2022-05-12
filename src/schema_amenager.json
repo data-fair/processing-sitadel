@@ -1,21 +1,24 @@
 [
     {
         "key": "REG",
-        "title": "REG",
+        "title": "Code de la région",
         "description": "Code de la région du lieu des travaux",
-        "type": "string"
+        "type": "string",
+        "x-refersTo": "http://rdf.insee.fr/def/geo#codeRegion"
     },
     {
         "key": "DEP",
-        "title": "DEP",
+        "title": "Code du département",
         "description": "Code du département du lieu des travaux",
-        "type": "string"
+        "type": "string",
+        "x-refersTo": "http://rdf.insee.fr/def/geo#codeDepartement"
     },
     {
         "key": "COMM",
-        "title": "COMM",
+        "title": "Code INSEE de la commune",
         "description": "Code de la commune du lieu des travaux",
-        "type": "string"
+        "type": "string",
+        "x-refersTo": "http://rdf.insee.fr/def/geo#codeCommune"
     },
     {
         "key": "Num_PA",
@@ -27,7 +30,20 @@
         "key": "Etat_PA",
         "title": "Etat d'avancement du projet",
         "description": "Etat d'avancement du projet",
-        "type": "integer"
+        "type": "string",
+        "ignoreDetection": true,
+        "x-labels": {
+            "2": "Autorisé",
+            "4": "Annulé",
+            "5": "Commencé",
+            "6": "Terminé"
+        },
+        "enum": [
+            "2",
+            "6",
+            "4",
+            "5"
+        ]
     },
     {
         "key": "DATE_REELLE_AUTORISATION",
@@ -85,15 +101,17 @@
     },
     {
         "key": "SIREN_DEM",
-        "title": "SIREN_DEM",
+        "title": "Numéro SIREN d'un demandeur",
         "description": "Numéro SIREN d'un demandeur avéré en tant que personne morale",
-        "type": "string"
+        "type": "string",
+        "x-refersTo": "http://dbpedia.org/ontology/siren"
     },
     {
         "key": "SIRET_DEM",
-        "title": "SIRET_DEM",
+        "title": "Numéro SIRET d'un demandeur",
         "description": "Numéro SIRET d'un demandeur avéré en tant que personne morale",
-        "type": "string"
+        "type": "string",
+        "x-refersTo": "http://www.datatourisme.fr/ontology/core/1.0/#siret"
     },
     {
         "key": "CODPOST_DEM",
@@ -147,7 +165,8 @@
         "key": "ADR_CODPOST_TER",
         "title": "ADR_CODPOST_TER",
         "description": "Code postal du terrain",
-        "type": "string"
+        "type": "string",
+        "x-refersTo": "http://schema.org/postalCode"
     },
     {
         "key": "sec_cadastre1",
@@ -194,20 +213,35 @@
     {
         "key": "ZONE_OP",
         "title": "Zone opératoire",
-        "description": "Code \"zone opératoire\"",
-        "type": "integer"
+        "description": "Code zone opératoire",
+        "type": "string",
+        "ignoreDetection": true,
+        "x-labels": {
+            "1": "Lotissement",
+            "2": "Zone d'aménagement concerté",
+            "3": "Association foncière urbaine",
+            "4": "Hors zone ou inconnu"
+        },
+        "enum": [
+            "1",
+            "2",
+            "3",
+            "4"
+        ]
     },
     {
         "key": "latitude",
         "title": "latitude",
         "description": "Coordonné géographique qui permet de se situer par rapport à l'équateur",
-        "type": "number"
+        "type": "number",
+        "x-refersTo": "http://schema.org/latitude"
     },
     {
         "key": "longitude",
         "title": "longitude",
         "description": "Coordonnée géographique qui permet de se situer par rapport au méridien de Greenwich",
-        "type": "number"
+        "type": "number",
+        "x-refersTo": "http://schema.org/longitude"
     },
     {
         "key": "parcel_confidence",
@@ -219,6 +253,7 @@
         "key": "parcelle",
         "title": "Code de la parcelle",
         "description": "Le code de la parcelle cadastrale est le numéro unique attribué par le Service du cadastre pour identifier une parcelle cadastrale au niveau national",
-        "type": "string"
+        "type": "string",
+        "x-refersTo": "http://dbpedia.org/ontology/codeLandRegistry"
     }
 ]

@@ -38,11 +38,13 @@ describe('Station service processing', () => {
     const processingConfig = {
       clearFiles: true,
       datasetIdPrefix: 'Sitadel',
+      datasetMode: 'create',
       dataset: {
-        title: 'Sitadel - test'
+        title: 'Sitadel - test',
+        id: 'sitadel-test-id'
       },
       departements: [56],
-      processFile: 'demolir',
+      processFile: 'locaux',
       urlParcelData: {
         href: config.parcelsUrl
       }
