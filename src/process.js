@@ -24,8 +24,8 @@ function measure (lat1, lon1, lat2, lon2) { // generally used geo measurement fu
 }
 
 async function geocode (arr, axios, log) {
-  log.info(`Géocodage de ${arr.length} items`, '')
-
+  log.info(`Géocodage de ${arr.length} éléments`, '')
+  const start = new Date().getTime()
   // add the header for the request
   let csvString = Object.keys(arr[0]).join(',') + '\n'
   csvString += csvSync.stringify(arr)
@@ -51,6 +51,8 @@ async function geocode (arr, axios, log) {
       }
     }
   )
+  const duration = new Date().getTime() - start
+  log.info(`Géocodage réalisé en ${duration.toLocaleString('fr')} ms.`, '')
 
   if (!header) {
     header = true
@@ -60,11 +62,11 @@ async function geocode (arr, axios, log) {
   return response.data.substring(response.data.indexOf('\n') + 1)
 }
 
-async function getParcel (array, stats, processingConfig, axios, log) {
+async function getParcel (array, globalStats, processingConfig, axios, log) {
   let stringRequest = ''
   let a = [...new Set(array.map(elem => elem.num_cadastre1.padStart(4, '0')))]
   if (a.length > 1400) {
-    log.error('getParcel, trop de parcelles pour l\'URL')
+    log.error(`Trop de parcelles (${a.length}) pour la commune ${array[0].COMM}`)
     for (const i of array) {
       delete i.result_type
       i.latitude = undefined
@@ -82,41 +84,31 @@ async function getParcel (array, stats, processingConfig, axios, log) {
   } while (a.length > ecart)
   if (a.length > 0) stringRequest += `/.*(${a.slice(0, ecart).join('|')})/`
 
-  const param = {
-    params: {
-      qs: `code:(/${array[0].COMM}.{9}/ AND (${stringRequest}))`,
-      size: 0
-    }
+  const params = {
+    qs: `code:(/${array[0].COMM}.{9}/ AND (${stringRequest}))`,
+    size: 10000
   }
-  // console.log(param.params.qs)
+  log.info('Récupération des coordonnées des parcelles candidates', '')
 
-  // const startTime = new Date().getTime()
-  const nbParcels = (await axios.get(processingConfig.urlParcelData.href + '/lines', param)).data.total
-
-  // const end = new Date().getTime()
-  // log.info(`Temps requête nbParcels : ${end - startTime} ms`)
-  // console.log(nbParcels)
-
-  param.params.size = nbParcels
-  if (param.params.size > 10000) param.params.size = 10000
-
-  const start2 = new Date().getTime()
-  let parcels = (await axios.get(processingConfig.urlParcelData.href + '/lines', param)).data
-
+  const start = new Date().getTime()
+  let parcels = (await axios.get(processingConfig.urlParcelData.href + '/lines', { params })).data
   const commParcels = parcels.results
-  let next = parcels.next
 
-  for (let tour = 1; tour < Math.ceil(nbParcels / 10000); tour++) {
-    parcels = (await axios.get(next)).data
+  while (parcels.results.length === 10000) {
+    parcels = (await axios.get(parcels.next)).data
     commParcels.push(...parcels.results)
-    next = parcels.next
   }
+  const duration = new Date().getTime() - start
+  log.info(`Récupération des coordonnées de ${commParcels.length} parcelles en ${duration.toLocaleString('fr')} ms`, '')
 
-  const end2 = new Date().getTime()
-  // log.info(`Temps requête 2 : ${end2 - start2} ms`)
-  stats.moyReq += end2 - start2
-  stats.sum += 1
-
+  globalStats.moyReq += duration
+  globalStats.sum += 1
+  const stats = {
+    sur: 0,
+    premier: 0,
+    geocode: 0,
+    erreur: 0
+  }
   const ret = []
   // const startTraitement = new Date().getTime()
   for (const input of array) {
@@ -246,11 +238,16 @@ async function getParcel (array, stats, processingConfig, axios, log) {
   }
   // const endTraitement = new Date().getTime()
   // log.info(`Temps traitement : ${endTraitement - startTraitement} ms`)
-
-  if (!stats.header) {
-    stats.header = true
+  const sum = stats.sur + stats.geocode + stats.premier + stats.erreur
+  log.info(`${ret.length} éléments, Sûr : ${Math.round(stats.sur * 100 / sum)}%, Géocodé : ${Math.round(stats.geocode * 100 / sum)}%, Géododé peu précis : ${Math.round(stats.premier * 100 / sum)}%, Non défini : ${Math.round(stats.erreur * 100 / sum)}%, Total : ${sum}`)
+  if (!globalStats.header) {
+    globalStats.header = true
     return csvSync.stringify(ret, { header: true })
   }
+  globalStats.sur += stats.sur
+  globalStats.geocode += stats.geocode
+  globalStats.premier += stats.premier
+  globalStats.erreur += stats.erreur
   return csvSync.stringify(ret)
 }
 
@@ -264,7 +261,7 @@ function compare (a, b) {
 
 async function fusion (a, b, option, log) {
   if (b === undefined) {
-    log.step('Traitement')
+    log.info(`Pas de fusion nécessaire, utilisation de ${a}. Option : ${option}`)
     return fs.createReadStream(a, { objectMode: true })
       .pipe(csv.parse({ columns: true, delimiter: ';' }))
       .pipe(filter(function (data) {
@@ -272,7 +269,7 @@ async function fusion (a, b, option, log) {
       }, { objectMode: true }))
   }
 
-  log.step(`Fusion de ${a} et ${b}. Option : ${option}`)
+  log.info(`Fusion de ${a} et ${b}. Option : ${option}`)
 
   const h1 = new Promise(function (resolve) {
     fs.createReadStream(a, { objectMode: true }).on('data', function (data) { resolve(data.toString().split('\n')[0]) })
@@ -299,11 +296,10 @@ async function fusion (a, b, option, log) {
       .pipe(csv.parse({ columns: true, delimiter: ';' }))
       .pipe(filter(function (data) { return option.includes(parseInt(data.DEP)) }, { objectMode: true }))
 
-  log.step('Traitement')
   return mergeSortStream(f1, f2, compare)
 }
 
-const extend = async (processingConfig, axios, log) => {
+module.exports = async (processingConfig, axios, log) => {
   const stats = {
     sur: 0,
     premier: 0,
@@ -322,6 +318,7 @@ const extend = async (processingConfig, axios, log) => {
   dir = dir.filter(file => file.endsWith('.csv') && file.includes(processingConfig.processFile) && !file.startsWith(processingConfig.datasetIdPrefix))
   const file1 = dir[0]
   const file2 = dir[1]
+  log.step('Traitement des fichiers')
   await pump(
     await fusion(file1, file2, processingConfig.departements, log),
     new stream.Transform({
@@ -372,11 +369,6 @@ const extend = async (processingConfig, axios, log) => {
     fs.createWriteStream(processingConfig.datasetIdPrefix + '-' + processingConfig.processFile + '.csv')
   )
   const sum = stats.sur + stats.geocode + stats.premier + stats.erreur
-  log.step('Fin du traitement')
   log.info(`Sûr : ${Math.round(stats.sur * 100 / sum)}%, Géocodé : ${Math.round(stats.geocode * 100 / sum)}%, Géododé peu précis : ${Math.round(stats.premier * 100 / sum)}%, Non défini : ${Math.round(stats.erreur * 100 / sum)}%, Total : ${sum}`)
   log.info(`Moyenne requête parcelles : ${Math.round(stats.moyReq / stats.sum)} ms`)
-}
-
-module.exports = async (processingConfig, axios, log) => {
-  await extend(processingConfig, axios, log)
 }

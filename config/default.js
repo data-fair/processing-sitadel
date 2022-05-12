@@ -1,4 +1,5 @@
 module.exports = {
   dataFairUrl: null,
-  dataFairAPIKey: null
+  dataFairAPIKey: null,
+  parcelsUrl: null
 }
