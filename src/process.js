@@ -313,7 +313,7 @@ module.exports = async (processingConfig, tmpDir, axios, log) => {
   const tab = []
 
   let dir = await fs.readdir('.')
-  dir = dir.filter(file => file.endsWith('.csv') && file.includes(processingConfig.processFile) && !file.startsWith(processingConfig.datasetIdPrefix))
+  dir = dir.filter(file => file.endsWith('.csv') && file.includes(processingConfig.processFile) && !file.startsWith('sitadel'))
   const file1 = dir[0]
   const file2 = dir[1]
   log.step('Traitement des fichiers')
@@ -362,7 +362,7 @@ module.exports = async (processingConfig, tmpDir, axios, log) => {
     }),
     csv.parse({ columns: true, delimiter: ',' }),
     csv.stringify({ header: true, quoted_string: true }),
-    fs.createWriteStream(path.join(tmpDir, processingConfig.datasetIdPrefix + '-' + processingConfig.processFile + '.csv'))
+    fs.createWriteStream(path.join(tmpDir, 'sitadel-' + processingConfig.processFile + '.csv'))
   )
   const sum = stats.sur + stats.geocode + stats.premier + stats.erreur
   log.info(`Sûr : ${Math.round(stats.sur * 100 / sum)}%, Géocodé : ${Math.round(stats.geocode * 100 / sum)}%, Géododé peu précis : ${Math.round(stats.premier * 100 / sum)}%, Non défini : ${Math.round(stats.erreur * 100 / sum)}%, Total : ${sum}`)

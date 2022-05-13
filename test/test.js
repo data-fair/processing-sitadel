@@ -1,4 +1,4 @@
-process.env.NODE_ENV = 'local-dev'
+process.env.NODE_ENV = 'test'
 const fs = require('fs-extra')
 const config = require('config')
 const axios = require('axios')
@@ -37,7 +37,6 @@ describe('Station service processing', () => {
 
     const processingConfig = {
       clearFiles: true,
-      datasetIdPrefix: 'Sitadel',
       datasetMode: 'create',
       dataset: {
         title: 'Sitadel - test',

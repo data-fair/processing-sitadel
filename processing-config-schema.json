@@ -13,8 +13,8 @@
           "type": "object",
           "required": ["title"],
           "properties": {
-            "id": { "type": "string", "title": "sitadel" },
-            "title": { "type": "string", "title": "Titre", "default": "sitadel" }
+            "id": { "type": "string", "title": "Identifiant du jeu de donnée" },
+            "title": { "type": "string", "title": "Titre du jeu de donnée", "default": "Sitadel" }
           }
         }
       }
@@ -25,6 +25,7 @@
         "datasetMode": { "type": "string", "const": "update" },
         "dataset": {
           "type": "object",
+          "title": "Jeu de donnée existant",
           "x-fromUrl": "{context.dataFairUrl}/api/v1/datasets?q={q}&select=id,title&{context.ownerFilter}",
           "x-itemsProp": "results",
           "x-itemTitle": "title",
@@ -72,11 +73,6 @@
         "title": "Départements à utiliser",
         "items": { "type": "integer" },
         "description": "Laissez vide pour sélectionner l'ensemble des départements."
-      },
-      "datasetIdPrefix": {
-        "title": "Préfixe des identifiants de jeux de données",
-        "type": "string",
-        "default": "sitadel"
       }
     }
   }]

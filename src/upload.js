@@ -24,7 +24,7 @@ module.exports = async (processingConfig, tmpDir, axios, log, patchConfig) => {
     await log.step('Création du jeu de données')
   }
 
-  const filePath = path.join(tmpDir, processingConfig.datasetIdPrefix + '-' + processingConfig.processFile + '.csv')
+  const filePath = path.join(tmpDir, 'sitadel-' + processingConfig.processFile + '.csv')
   formData.append('file', fs.createReadStream(filePath), { filename: path.parse(filePath).base })
 
   formData.getLength = util.promisify(formData.getLength)
