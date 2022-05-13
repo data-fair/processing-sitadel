@@ -27,17 +27,17 @@ module.exports = async (processingConfig, dir = 'data', axios, log) => {
     if (file.type === 'main' && file.format !== 'html' && (file.title.normalize('NFD').replace(/[\u0300-\u036f]/g, '')).includes(processingFile)) {
       log.info(`téléchargement du fichier ${file.title}`)
       const url = new URL(file.url)
-      const fileName = path.parse(url.pathname).base
-      await withStreamableFile(fileName, async (writeStream) => {
+      const filePath = `${dir}/${path.parse(url.pathname).base}`
+      await withStreamableFile(filePath, async (writeStream) => {
         const res = await axios({ url: url.href, method: 'GET', responseType: 'stream' })
         await pump(res.data, writeStream)
       })
 
-      if (fileName.endsWith('.zip')) {
-        log.info(`extraction de l'archive ${fileName}`, '')
-        const { stderr } = await exec(`unzip -o ${fileName}`)
-        if (stderr) throw new Error(`échec à l'extraction de l'archive ${fileName} : ${stderr}`)
-        await fs.remove(fileName)
+      if (filePath.endsWith('.zip')) {
+        log.info(`extraction de l'archive ${filePath}`, '')
+        const { stderr } = await exec(`unzip -o ${filePath}`)
+        if (stderr) throw new Error(`échec à l'extraction de l'archive ${filePath} : ${stderr}`)
+        await fs.remove(filePath)
       }
     }
   }

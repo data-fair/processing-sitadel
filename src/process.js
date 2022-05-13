@@ -7,6 +7,7 @@ const stream = require('stream')
 const FormData = require('form-data')
 const mergeSortStream = require('merge-sort-stream')
 const filter = require('stream-filter')
+const path = require('path')
 
 let header = false
 
@@ -100,7 +101,6 @@ async function getParcel (array, globalStats, processingConfig, axios, log) {
   const duration = new Date().getTime() - start
 
   globalStats.moyReq += duration
-  globalStats.sum += 1
   const stats = {
     sur: 0,
     premier: 0,
@@ -237,16 +237,16 @@ async function getParcel (array, globalStats, processingConfig, axios, log) {
   // const endTraitement = new Date().getTime()
   // log.info(`Temps traitement : ${endTraitement - startTraitement} ms`)
   const sum = stats.sur + stats.geocode + stats.premier + stats.erreur
-
   log.info(`Commune ${array[0].COMM}, ${array.length} parcelle(s), ${commParcels.length} récupérées en ${duration.toLocaleString('fr')} ms, Sûr : ${Math.round(stats.sur * 100 / sum)}%, Géocodé : ${Math.round(stats.geocode * 100 / sum)}%, Géododé peu précis : ${Math.round(stats.premier * 100 / sum)}%, Non défini : ${Math.round(stats.erreur * 100 / sum)}%`)
-  if (!globalStats.header) {
-    globalStats.header = true
-    return csvSync.stringify(ret, { header: true })
-  }
   globalStats.sur += stats.sur
   globalStats.geocode += stats.geocode
   globalStats.premier += stats.premier
   globalStats.erreur += stats.erreur
+
+  if (!globalStats.header) {
+    globalStats.header = true
+    return csvSync.stringify(ret, { header: true })
+  }
   return csvSync.stringify(ret)
 }
 
@@ -298,15 +298,14 @@ async function fusion (a, b, option, log) {
   return mergeSortStream(f1, f2, compare)
 }
 
-module.exports = async (processingConfig, axios, log) => {
+module.exports = async (processingConfig, tmpDir, axios, log) => {
   const stats = {
     sur: 0,
     premier: 0,
     geocode: 0,
     erreur: 0,
     header: false,
-    moyReq: 0,
-    sum: 0
+    moyReq: 0
   }
   let currComm
   const batchComm = []
@@ -363,9 +362,9 @@ module.exports = async (processingConfig, axios, log) => {
     }),
     csv.parse({ columns: true, delimiter: ',' }),
     csv.stringify({ header: true, quoted_string: true }),
-    fs.createWriteStream(processingConfig.datasetIdPrefix + '-' + processingConfig.processFile + '.csv')
+    fs.createWriteStream(path.join(tmpDir, processingConfig.datasetIdPrefix + '-' + processingConfig.processFile + '.csv'))
   )
   const sum = stats.sur + stats.geocode + stats.premier + stats.erreur
   log.info(`Sûr : ${Math.round(stats.sur * 100 / sum)}%, Géocodé : ${Math.round(stats.geocode * 100 / sum)}%, Géododé peu précis : ${Math.round(stats.premier * 100 / sum)}%, Non défini : ${Math.round(stats.erreur * 100 / sum)}%, Total : ${sum}`)
-  log.info(`Moyenne requête parcelles : ${Math.round(stats.moyReq / stats.sum)} ms`)
+  log.info(`Moyenne requête parcelles : ${Math.round(stats.moyReq / sum)} ms`)
 }

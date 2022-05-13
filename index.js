@@ -8,9 +8,8 @@ exports.run = async ({ pluginConfig, processingConfig, tmpDir, axios, log, patch
   log.info(`Url dataset information parcelles : ${processingConfig.urlParcelData.href}`)
   log.info(`Fichier à traiter : ${processingConfig.processFile}`)
   log.info(`Supprimer les fichiers téléchargés : ${processingConfig.clearFiles}`)
-
   await download(processingConfig, tmpDir, axios, log)
-  await process(processingConfig, axios, log)
+  await process(processingConfig, tmpDir, axios, log)
   await upload(processingConfig, tmpDir, axios, log, patchConfig)
   if (processingConfig.clearFiles) {
     await fs.emptyDir('./')

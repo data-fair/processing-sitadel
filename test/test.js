@@ -44,10 +44,11 @@ describe('Station service processing', () => {
         id: 'sitadel-test-id'
       },
       departements: [56],
-      processFile: 'locaux',
+      processFile: 'demolir',
       urlParcelData: {
         href: config.parcelsUrl
-      }
+      },
+      tmpDir: 'data'
     }
 
     const log = {
@@ -65,8 +66,8 @@ describe('Station service processing', () => {
     }
 
     const cwd = process.cwd()
-    await fs.ensureDir('data/')
-    process.chdir('data/')
+    await fs.ensureDir(processingConfig.tmpDir)
+    process.chdir(processingConfig.tmpDir)
     // console.log(process.cwd())
     await processing.run({ pluginConfig, processingConfig, tmpDir: path.resolve('./'), axios: axiosInstance, log, patchConfig })
     process.chdir(cwd)
