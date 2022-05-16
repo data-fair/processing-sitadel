@@ -317,7 +317,7 @@ module.exports = async (processingConfig, tmpDir, axios, log) => {
 
   const tab = []
 
-  let dir = await fs.readdir('.')
+  let dir = await fs.readdir(tmpDir)
   log.info(`Contenu répertoire de travail ${process.cwd()} : ${dir}`)
   dir = dir.filter(file => file.endsWith('.csv') && file.includes(processingConfig.processFile) && !file.startsWith('sitadel'))
   log.info(`Contenu filtré : ${dir}`)
