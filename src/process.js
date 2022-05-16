@@ -261,11 +261,13 @@ function compare (a, b) {
 async function fusion (a, b, option, log) {
   if (b === undefined) {
     log.info(`Pas de fusion nécessaire, utilisation de ${a}. Option : ${option}`)
-    return fs.createReadStream(a, { objectMode: true })
-      .pipe(csv.parse({ columns: true, delimiter: ';' }))
-      .pipe(filter(function (data) {
-        return option.includes(parseInt(data.DEP))
+    let out = fs.createReadStream(a, { objectMode: true }).pipe(csv.parse({ columns: true, delimiter: ';' }))
+    if (option.length > 0) {
+      out = out.pipe(filter(function (data) {
+        return option.includes(data.DEP)
       }, { objectMode: true }))
+    }
+    return out
   }
 
   log.info(`Fusion de ${a} et ${b}. Option : ${option}`)
@@ -285,15 +287,18 @@ async function fusion (a, b, option, log) {
     log.info('Fichiers compatibles')
   }
 
-  const f1 =
-     fs.createReadStream(a, { objectMode: true })
-       .pipe(csv.parse({ columns: true, delimiter: ';' }))
-       .pipe(filter(function (data) { return option.includes(parseInt(data.DEP)) }, { objectMode: true }))
+  let f1 = fs.createReadStream(a, { objectMode: true }).pipe(csv.parse({ columns: true, delimiter: ';' }))
 
-  const f2 =
-    fs.createReadStream(b, { objectMode: true })
-      .pipe(csv.parse({ columns: true, delimiter: ';' }))
-      .pipe(filter(function (data) { return option.includes(parseInt(data.DEP)) }, { objectMode: true }))
+  let f2 = fs.createReadStream(b, { objectMode: true }).pipe(csv.parse({ columns: true, delimiter: ';' }))
+
+  if (option.length > 0) {
+    f1 = f1.pipe(filter(function (data) {
+      return option.includes(data.DEP)
+    }, { objectMode: true }))
+    f2 = f2.pipe(filter(function (data) {
+      return option.includes(data.DEP)
+    }, { objectMode: true }))
+  }
 
   return mergeSortStream(f1, f2, compare)
 }
@@ -313,7 +318,9 @@ module.exports = async (processingConfig, tmpDir, axios, log) => {
   const tab = []
 
   let dir = await fs.readdir('.')
+  log.info(`Contenu répertoire de travail ${process.cwd()} : ${dir}`)
   dir = dir.filter(file => file.endsWith('.csv') && file.includes(processingConfig.processFile) && !file.startsWith('sitadel'))
+  log.info(`Contenu filtré : ${dir}`)
   const file1 = dir[0]
   const file2 = dir[1]
   log.step('Traitement des fichiers')

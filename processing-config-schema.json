@@ -71,7 +71,7 @@
       "departements": {
         "type": "array",
         "title": "Départements à utiliser",
-        "items": { "type": "integer" },
+        "items": { "type": "string" },
         "description": "Laissez vide pour sélectionner l'ensemble des départements."
       }
     }
