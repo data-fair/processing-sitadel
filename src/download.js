@@ -35,7 +35,7 @@ module.exports = async (processingConfig, dir = 'data', axios, log) => {
 
       if (filePath.endsWith('.zip')) {
         await log.info(`extraction de l'archive ${filePath}`, '')
-        const { stderr } = await exec(`unzip -o ${filePath}`)
+        const { stderr } = await exec(`unzip -o ${filePath} -d ${dir}`)
         if (stderr) throw new Error(`échec à l'extraction de l'archive ${filePath} : ${stderr}`)
         await fs.remove(filePath)
         const files = await fs.readdir(dir)

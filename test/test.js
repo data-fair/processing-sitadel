@@ -43,11 +43,12 @@ describe('Station service processing', () => {
         id: 'sitadel-test-id'
       },
       departements: ['56'],
-      processFile: 'demolir',
+      processFile: 'locaux',
       urlParcelData: {
         href: config.parcelsUrl
       },
-      tmpDir: 'data'
+      tmpDir: 'data/tmp',
+      workDir: 'data/work'
     }
 
     const log = {
@@ -64,11 +65,12 @@ describe('Station service processing', () => {
       Object.assign(processingConfig, patch)
     }
 
-    const cwd = process.cwd()
+    // const cwd = process.cwd()
     await fs.ensureDir(processingConfig.tmpDir)
-    process.chdir(processingConfig.tmpDir)
-    // console.log(process.cwd())
-    await processing.run({ pluginConfig, processingConfig, tmpDir: path.resolve('./'), axios: axiosInstance, log, patchConfig })
-    process.chdir(cwd)
+    await fs.ensureDir(processingConfig.workDir)
+    const tmpDir = path.resolve(processingConfig.tmpDir)
+    process.chdir(processingConfig.workDir)
+    await processing.run({ pluginConfig, processingConfig, tmpDir, axios: axiosInstance, log, patchConfig })
+    // process.chdir(cwd)
   })
 })
