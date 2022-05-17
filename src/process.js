@@ -63,7 +63,7 @@ async function geocode (arr, axios, log) {
 
 async function getParcel (array, globalStats, processingConfig, axios, log) {
   let stringRequest = ''
-  let a = [...new Set(array.map(elem => elem.num_cadastre1.padStart(4, '0')))]
+  let a = [...new Set(array.map(elem => elem.num_cadastre1.replace(/\D/g, '').padStart(4, '0')))]
   if (a.length > 1400) {
     await log.error(`Trop de parcelles (${a.length}) pour la commune ${array[0].COMM}`)
     for (const i of array) {
@@ -116,8 +116,8 @@ async function getParcel (array, globalStats, processingConfig, axios, log) {
     delete input.longitude
     delete input.result_type
 
-    if (input.num_cadastre1.trim().length) {
-      const codeParcelleTotal = commParcels.filter(elem => elem.code.match(new RegExp(`${array[0].COMM}.....${input.num_cadastre1.padStart(4, '0')}`)))
+    if (input.num_cadastre1.replace(/\D/g, '').length) {
+      const codeParcelleTotal = commParcels.filter(elem => elem.code.match(new RegExp(`${array[0].COMM}.....${input.num_cadastre1.replace(/\D/g, '').padStart(4, '0')}`)))
 
       let stoElem
 
