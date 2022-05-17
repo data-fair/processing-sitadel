@@ -22,22 +22,24 @@ module.exports = async (processingConfig, dir = 'data', axios, log) => {
 
   const ressources = res.data.resources
   const processingFile = processingConfig.processFile
-  log.step('Téléchargement')
+  await log.step('Téléchargement')
   for (const file of ressources) {
     if (file.type === 'main' && file.format !== 'html' && (file.title.normalize('NFD').replace(/[\u0300-\u036f]/g, '')).includes(processingFile)) {
-      log.info(`téléchargement du fichier ${file.title}`)
       const url = new URL(file.url)
       const filePath = `${dir}/${path.parse(url.pathname).base}`
+      await log.info(`téléchargement du fichier ${file.title}, écriture dans ${filePath}`)
       await withStreamableFile(filePath, async (writeStream) => {
         const res = await axios({ url: url.href, method: 'GET', responseType: 'stream' })
         await pump(res.data, writeStream)
       })
 
       if (filePath.endsWith('.zip')) {
-        log.info(`extraction de l'archive ${filePath}`, '')
+        await log.info(`extraction de l'archive ${filePath}`, '')
         const { stderr } = await exec(`unzip -o ${filePath}`)
         if (stderr) throw new Error(`échec à l'extraction de l'archive ${filePath} : ${stderr}`)
         await fs.remove(filePath)
+        const files = await fs.readdir(dir)
+        await log.info(`Contenu répertoire de travail ${dir} après extraction : ${files}`)
       }
     }
   }

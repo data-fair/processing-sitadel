@@ -12,7 +12,6 @@ const path = require('path')
 let header = false
 
 function measure (lat1, lon1, lat2, lon2) { // generally used geo measurement function
-  // console.log(lat1, lon1, lat2, lon2)
   const R = 6371 // Radius of earth in KM
   const dLat = lat2 * Math.PI / 180 - lat1 * Math.PI / 180
   const dLon = lon2 * Math.PI / 180 - lon1 * Math.PI / 180
@@ -25,12 +24,11 @@ function measure (lat1, lon1, lat2, lon2) { // generally used geo measurement fu
 }
 
 async function geocode (arr, axios, log) {
-  log.info(`Géocodage de ${arr.length} éléments`, '')
+  await log.info(`Géocodage de ${arr.length} éléments`, '')
   const start = new Date().getTime()
   // add the header for the request
   let csvString = Object.keys(arr[0]).join(',') + '\n'
   csvString += csvSync.stringify(arr)
-  // console.log(csvString)
 
   const form = new FormData()
   form.append('data', csvString, 'filename')
@@ -53,7 +51,7 @@ async function geocode (arr, axios, log) {
     }
   )
   const duration = new Date().getTime() - start
-  log.info(`Géocodage réalisé en ${duration.toLocaleString('fr')} ms.`, '')
+  await log.info(`Géocodage réalisé en ${duration.toLocaleString('fr')} ms.`, '')
 
   if (!header) {
     header = true
@@ -67,7 +65,7 @@ async function getParcel (array, globalStats, processingConfig, axios, log) {
   let stringRequest = ''
   let a = [...new Set(array.map(elem => elem.num_cadastre1.padStart(4, '0')))]
   if (a.length > 1400) {
-    log.error(`Trop de parcelles (${a.length}) pour la commune ${array[0].COMM}`)
+    await log.error(`Trop de parcelles (${a.length}) pour la commune ${array[0].COMM}`)
     for (const i of array) {
       delete i.result_type
       i.latitude = undefined
@@ -224,7 +222,6 @@ async function getParcel (array, globalStats, processingConfig, axios, log) {
         stats.erreur++
       }
     } else {
-      // num_cadastre1 null
       input.latitude = undefined
       input.longitude = undefined
       input.parcel_confidence = undefined
@@ -234,10 +231,8 @@ async function getParcel (array, globalStats, processingConfig, axios, log) {
     delete input.geocoding
     ret.push(input)
   }
-  // const endTraitement = new Date().getTime()
-  // log.info(`Temps traitement : ${endTraitement - startTraitement} ms`)
   const sum = stats.sur + stats.geocode + stats.premier + stats.erreur
-  log.info(`Commune ${array[0].COMM}, ${array.length} parcelle(s), ${commParcels.length} récupérées en ${duration.toLocaleString('fr')} ms, Sûr : ${Math.round(stats.sur * 100 / sum)}%, Géocodé : ${Math.round(stats.geocode * 100 / sum)}%, Géododé peu précis : ${Math.round(stats.premier * 100 / sum)}%, Non défini : ${Math.round(stats.erreur * 100 / sum)}%`)
+  await log.info(`Commune ${array[0].COMM}, ${array.length} parcelle(s), ${commParcels.length} récupérées en ${duration.toLocaleString('fr')} ms, Sûr : ${Math.round(stats.sur * 100 / sum)}%, Géocodé : ${Math.round(stats.geocode * 100 / sum)}%, Géododé peu précis : ${Math.round(stats.premier * 100 / sum)}%, Non défini : ${Math.round(stats.erreur * 100 / sum)}%`)
   globalStats.sur += stats.sur
   globalStats.geocode += stats.geocode
   globalStats.premier += stats.premier
@@ -260,7 +255,7 @@ function compare (a, b) {
 
 async function fusion (a, b, option, log) {
   if (b === undefined) {
-    log.info(`Pas de fusion nécessaire, utilisation de ${a}. Option : ${option}`)
+    await log.info(`Pas de fusion nécessaire, utilisation de ${a}. Option : ${option}`)
     let out = fs.createReadStream(a, { objectMode: true }).pipe(csv.parse({ columns: true, delimiter: ';' }))
     if (option.length > 0) {
       out = out.pipe(filter(function (data) {
@@ -270,7 +265,7 @@ async function fusion (a, b, option, log) {
     return out
   }
 
-  log.info(`Fusion de ${a} et ${b}. Option : ${option}`)
+  await log.info(`Fusion de ${a} et ${b}. Option : ${option}`)
 
   const h1 = new Promise(function (resolve) {
     fs.createReadStream(a, { objectMode: true }).on('data', function (data) { resolve(data.toString().split('\n')[0]) })
@@ -281,10 +276,10 @@ async function fusion (a, b, option, log) {
   })
 
   if (await h1 !== await h2) {
-    log.error('Erreur : Les deux CSVs ne possèdent pas la même en-tête')
+    await log.error('Erreur : Les deux CSVs ne possèdent pas la même en-tête')
     throw new Error('Erreur : Les deux CSVs ne possèdent pas la même en-tête')
   } else {
-    log.info('Fichiers compatibles')
+    await log.info('Fichiers compatibles')
   }
 
   let f1 = fs.createReadStream(a, { objectMode: true }).pipe(csv.parse({ columns: true, delimiter: ';' }))
@@ -317,13 +312,13 @@ module.exports = async (processingConfig, tmpDir, axios, log) => {
 
   const tab = []
 
-  let dir = await fs.readdir(tmpDir)
-  log.info(`Contenu répertoire de travail ${process.cwd()} : ${dir}`)
-  dir = dir.filter(file => file.endsWith('.csv') && file.includes(processingConfig.processFile) && !file.startsWith('sitadel'))
-  log.info(`Contenu filtré : ${dir}`)
-  const file1 = dir[0]
-  const file2 = dir[1]
-  log.step('Traitement des fichiers')
+  let files = await fs.readdir(tmpDir)
+  await log.info(`Contenu répertoire de travail ${tmpDir} avant fusion : ${files}`)
+  files = files.filter(file => file.endsWith('.csv') && file.includes(processingConfig.processFile) && !file.startsWith('sitadel'))
+  await log.info(`Contenu filtré : ${files}`)
+  const file1 = files[0]
+  const file2 = files[1]
+  await log.step('Traitement des fichiers')
   await pump(
     await fusion(file1, file2, processingConfig.departements, log),
     new stream.Transform({
@@ -372,6 +367,6 @@ module.exports = async (processingConfig, tmpDir, axios, log) => {
     fs.createWriteStream(path.join(tmpDir, 'sitadel-' + processingConfig.processFile + '.csv'))
   )
   const sum = stats.sur + stats.geocode + stats.premier + stats.erreur
-  log.info(`Sûr : ${Math.round(stats.sur * 100 / sum)}%, Géocodé : ${Math.round(stats.geocode * 100 / sum)}%, Géododé peu précis : ${Math.round(stats.premier * 100 / sum)}%, Non défini : ${Math.round(stats.erreur * 100 / sum)}%, Total : ${sum}`)
-  log.info(`Moyenne requête parcelles : ${Math.round(stats.moyReq / sum)} ms`)
+  await log.info(`Sûr : ${Math.round(stats.sur * 100 / sum)}%, Géocodé : ${Math.round(stats.geocode * 100 / sum)}%, Géododé peu précis : ${Math.round(stats.premier * 100 / sum)}%, Non défini : ${Math.round(stats.erreur * 100 / sum)}%, Total : ${sum}`)
+  await log.info(`Moyenne requête parcelles : ${Math.round(stats.moyReq / sum)} ms`)
 }
