@@ -75,16 +75,16 @@ async function getParcel (array, globalStats, processingConfig, axios, log) {
     }
     return csvSync.stringify(array)
   }
-  const ecart = 198
+  const ecart = 197
   do {
     stringRequest += `/.*(${a.slice(0, ecart).join('|')})/`
     a = a.slice(ecart, a.length + 1)
     if (a.length > 0) stringRequest += ' OR '
   } while (a.length > ecart)
-  if (a.length > 0) stringRequest += `/.*(${a.slice(0, ecart).join('|')})/`
+  if (a.length > 0) stringRequest += `/${array[0].COMM}.{5}(${a.slice(0, ecart).join('|')})/`
 
   const params = {
-    qs: `code:(/${array[0].COMM}.{9}/ AND (${stringRequest}))`,
+    qs: `code:(${stringRequest})`,
     size: 10000
   }
 
