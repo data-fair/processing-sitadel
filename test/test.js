@@ -1,4 +1,4 @@
-process.env.NODE_ENV = 'test'
+process.env.NODE_ENV = 'local-dev'
 const fs = require('fs-extra')
 const config = require('config')
 const axios = require('axios')
@@ -33,17 +33,17 @@ describe('Station service processing', () => {
       return Promise.reject(error.response)
     })
 
-    const pluginConfig = { pluginMessage: 'Hello' }
+    const pluginConfig = { urlLimit: 2000 }
 
     const processingConfig = {
-      clearFiles: true,
+      clearFiles: false,
       datasetMode: 'create',
       dataset: {
         title: 'Sitadel - test',
         id: 'sitadel-test-id'
       },
       departements: ['56'],
-      processFile: 'demolir',
+      processFile: 'logements',
       urlParcelData: {
         href: config.parcelsUrl
       },

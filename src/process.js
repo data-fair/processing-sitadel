@@ -61,40 +61,104 @@ async function geocode (arr, axios, log) {
   return response.data.substring(response.data.indexOf('\n') + 1)
 }
 
-async function getParcel (array, globalStats, processingConfig, axios, log) {
+async function getParcel (array, globalStats, pluginConfig, processingConfig, axios, log) {
   let stringRequest = ''
-  let a = [...new Set(array.map(elem => elem.num_cadastre1.replace(/\D/g, '').padStart(4, '0')))]
-  if (a.length > 1400) {
-    await log.error(`Trop de parcelles (${a.length}) pour la commune ${array[0].COMM}`)
-    for (const i of array) {
-      delete i.result_type
-      i.latitude = undefined
-      i.longitude = undefined
-      i.parcel_confidence = undefined
-      i.parcelle = undefined
-    }
-    return csvSync.stringify(array)
-  }
+  let arrayUniNum = [...new Set(array.map(elem => elem.num_cadastre1.replace(/\D/g, '').padStart(4, '0')))]
+
   const ecart = 197
   do {
-    stringRequest += `/${array[0].COMM}.{5}(${a.slice(0, ecart).join('|')})/`
-    a = a.slice(ecart, a.length + 1)
-  } while (a.length > ecart)
-  if (a.length > 0) stringRequest += ` OR /${array[0].COMM}.{5}(${a.slice(0, ecart).join('|')})/`
+    stringRequest += `/${array[0].COMM}.{5}(${arrayUniNum.slice(0, ecart).join('|')})/`
+    arrayUniNum = arrayUniNum.slice(ecart, arrayUniNum.length + 1)
+  } while (arrayUniNum.length > ecart)
+  if (arrayUniNum.length > 0) stringRequest += `/${array[0].COMM}.{5}(${arrayUniNum.slice(0, ecart).join('|')})/`
 
   const params = {
-    qs: `code:(${stringRequest})`,
     size: 10000
   }
 
-  const start = new Date().getTime()
-  let parcels = (await axios.get(processingConfig.urlParcelData.href + '/lines', { params })).data
-  const commParcels = parcels.results
+  // data is the array containing all of the results of requests
+  const commParcels = []
 
-  while (parcels.results.length === 10000) {
-    parcels = (await axios.get(parcels.next)).data
-    commParcels.push(...parcels.results)
+  const start = new Date().getTime()
+
+  // To avoid URL overflow, break
+  const breakRequestAt = pluginConfig.urlLimit
+  if (parseInt((stringRequest.length / breakRequestAt + 1)) > 1) {
+    await log.info(`Besoin de ${parseInt((stringRequest.length / breakRequestAt + 1))} requêtes pour couvrir l'ensemble des parcelles de ${array[0].COMM}.`)
   }
+  while (stringRequest.length > breakRequestAt) {
+    // get the closest line delimiter to slice the string well
+    let firstIndex
+    const indexslash = stringRequest.indexOf('/') !== -1 ? stringRequest.indexOf('/') : Infinity
+    const indexpar = stringRequest.indexOf('(') !== -1 ? stringRequest.indexOf('(') : Infinity
+    const indexbar = stringRequest.indexOf('|') !== -1 ? stringRequest.indexOf('|') : Infinity
+
+    if (indexslash < indexpar && indexslash < indexbar) firstIndex = indexslash
+    if (indexpar < indexslash && indexpar < indexbar) firstIndex = indexpar
+    if (indexbar < indexslash && indexbar < indexpar) firstIndex = indexbar
+
+    let decal = 1
+    if (stringRequest[firstIndex + 1] === '/') decal = 2
+    let tmpString = stringRequest.slice(firstIndex + decal, breakRequestAt)
+
+    const lastValue = tmpString.lastIndexOf('|') > tmpString.lastIndexOf(')') ? tmpString.lastIndexOf('|') : tmpString.lastIndexOf(')')
+
+    tmpString = tmpString.substring(0, lastValue)
+    if (tmpString.startsWith(array[0].COMM)) tmpString = tmpString.substring(tmpString.indexOf('(') + 1, lastValue)
+    params.qs = `code:(/${array[0].COMM}.{5}(${tmpString})/)`
+
+    // process the requests and add the result to the data array
+    try {
+      let parcels = (await axios.get(processingConfig.urlParcelData.href + '/lines', { params })).data
+      commParcels.push(...parcels.results)
+      while (parcels.results.length === 10000) {
+        parcels = (await axios.get(parcels.next)).data
+        commParcels.push(...parcels.results)
+      }
+    } catch (err) {
+      console.log(err.error)
+      console.log(err)
+      await log.info('Paramètres de requête ' + JSON.stringify(params))
+      throw err
+    }
+    // get the next string
+    stringRequest = stringRequest.substring(firstIndex + 1 + lastValue, stringRequest.length)
+  }
+  if (stringRequest.length > 0) {
+    // process the last group
+    let firstIndex
+    const indexslash = stringRequest.indexOf('/') !== -1 ? stringRequest.indexOf('/') : Infinity
+    const indexpar = stringRequest.indexOf('(') !== -1 ? stringRequest.indexOf('(') : Infinity
+    const indexbar = stringRequest.indexOf('|') !== -1 ? stringRequest.indexOf('|') : Infinity
+
+    if (indexslash < indexpar && indexslash < indexbar) firstIndex = indexslash
+    if (indexpar < indexslash && indexpar < indexbar) firstIndex = indexpar
+    if (indexbar < indexslash && indexbar < indexpar) firstIndex = indexbar
+
+    let decal = 1
+    if (stringRequest[firstIndex + 1] === '/') decal = 2
+    let tmpString = stringRequest.slice(firstIndex + decal, breakRequestAt)
+
+    const lastValue = tmpString.lastIndexOf('|') > tmpString.lastIndexOf(')') ? tmpString.lastIndexOf('|') : tmpString.lastIndexOf(')')
+
+    tmpString = tmpString.substring(0, lastValue)
+    if (tmpString.startsWith(array[0].COMM)) tmpString = tmpString.substring(tmpString.indexOf('(') + 1, lastValue)
+    params.qs = `code:(/${array[0].COMM}.{5}(${tmpString})/)`
+    try {
+      let parcels = (await axios.get(processingConfig.urlParcelData.href + '/lines', { params })).data
+      commParcels.push(...parcels.results)
+      while (parcels.results.length === 10000) {
+        parcels = (await axios.get(parcels.next)).data
+        commParcels.push(...parcels.results)
+      }
+    } catch (err) {
+      console.log(err.error)
+      console.log(err)
+      await log.info('Paramètres de requête ' + JSON.stringify(params))
+      throw err
+    }
+  }
+
   const duration = new Date().getTime() - start
 
   globalStats.moyReq += duration
@@ -118,7 +182,6 @@ async function getParcel (array, globalStats, processingConfig, axios, log) {
 
     if (input.num_cadastre1.replace(/\D/g, '').length) {
       const codeParcelleTotal = commParcels.filter(elem => elem.code.match(new RegExp(`${array[0].COMM}.....${input.num_cadastre1.replace(/\D/g, '').padStart(4, '0')}`)))
-
       let stoElem
 
       if (codeParcelleTotal !== undefined) {
@@ -127,14 +190,14 @@ async function getParcel (array, globalStats, processingConfig, axios, log) {
           if (matches.length === 1) {
             stoElem = matches[0]
             stats.sur++
-            input.latitude = stoElem.coord.split(',')[1]
-            input.longitude = stoElem.coord.split(',')[0]
+            input.latitude = parseFloat(stoElem.coord.split(',')[0]).toFixed(6)
+            input.longitude = parseFloat(stoElem.coord.split(',')[1]).toFixed(6)
             input.parcel_confidence = 100 + ' %'
             input.parcelle = stoElem.code
           } else {
             let min, secondD
             for (const elem of matches) {
-              const dist = measure(parseFloat(elem.coord.split(',')[1]), parseFloat(elem.coord.split(',')[0]), input.geocoding.lat, input.geocoding.lon)
+              const dist = measure(parseFloat(elem.coord.split(',')[0]), parseFloat(elem.coord.split(',')[1]), input.geocoding.lat, input.geocoding.lon)
               if (!min || dist < min) {
                 min = dist
                 stoElem = elem
@@ -144,8 +207,8 @@ async function getParcel (array, globalStats, processingConfig, axios, log) {
               }
             }
             const percent = Math.round(100 * secondD / (min + secondD))
-            input.latitude = stoElem.coord.split(',')[1]
-            input.longitude = stoElem.coord.split(',')[0]
+            input.latitude = parseFloat(stoElem.coord.split(',')[0]).toFixed(6)
+            input.longitude = parseFloat(stoElem.coord.split(',')[1]).toFixed(6)
             input.parcel_confidence = (percent < 25 ? '<25' : (percent + '').padStart(3, '0')) + ' %'.padStart(2, '0')
             input.parcelle = stoElem.code
             stats.geocode++
@@ -156,14 +219,14 @@ async function getParcel (array, globalStats, processingConfig, axios, log) {
 
             // On est sûr du résultat. Une seule parcelle disponible
             stats.sur++
-            input.latitude = stoElem.coord.split(',')[1]
-            input.longitude = stoElem.coord.split(',')[0]
+            input.latitude = parseFloat(stoElem.coord.split(',')[0]).toFixed(6)
+            input.longitude = parseFloat(stoElem.coord.split(',')[1]).toFixed(6)
             input.parcel_confidence = 100 + ' %'
             input.parcelle = stoElem.code
           } else if (codeParcelleTotal.length > 0 && (input.geocoding.result_type === 'housenumber' || input.geocoding.result_type === 'street')) {
             let min, secondD
             for (const elem of codeParcelleTotal) {
-              const dist = measure(parseFloat(elem.coord.split(',')[1]), parseFloat(elem.coord.split(',')[0]), input.geocoding.lat, input.geocoding.lon)
+              const dist = measure(parseFloat(elem.coord.split(',')[0]), parseFloat(elem.coord.split(',')[1]), input.geocoding.lat, input.geocoding.lon)
               if (!min || dist < min) {
                 min = dist
                 stoElem = elem
@@ -173,8 +236,8 @@ async function getParcel (array, globalStats, processingConfig, axios, log) {
               }
             }
             const percent = Math.round(100 * secondD / (min + secondD))
-            input.latitude = stoElem.coord.split(',')[1]
-            input.longitude = stoElem.coord.split(',')[0]
+            input.latitude = parseFloat(stoElem.coord.split(',')[0]).toFixed(6)
+            input.longitude = parseFloat(stoElem.coord.split(',')[1]).toFixed(6)
             input.parcel_confidence = (percent < 25 ? '<25' : (percent + '').padStart(3, '0')) + ' %'.padStart(2, '0')
             input.parcelle = stoElem.code
             // On prend le plus proche parce que la précision du geocoder est correcte
@@ -188,7 +251,7 @@ async function getParcel (array, globalStats, processingConfig, axios, log) {
             } else {
               let min, secondD
               for (const elem of codeParcelleTotal) {
-                const dist = measure(parseFloat(elem.coord.split(',')[1]), parseFloat(elem.coord.split(',')[0]), input.geocoding.lat, input.geocoding.lon)
+                const dist = measure(parseFloat(elem.coord.split(',')[0]), parseFloat(elem.coord.split(',')[1]), input.geocoding.lat, input.geocoding.lon)
                 if (!min || dist < min) {
                   secondD = min
                   min = dist
@@ -200,8 +263,8 @@ async function getParcel (array, globalStats, processingConfig, axios, log) {
               const percent3 = Math.round(100 * secondD / (min + secondD))
               confidence = (percent3 < 25 ? '<25' : (percent3 + '').padStart(3, '0')) + ' %'.padStart(2, '0')
             }
-            input.latitude = stoElem.coord.split(',')[1]
-            input.longitude = stoElem.coord.split(',')[0]
+            input.latitude = parseFloat(stoElem.coord.split(',')[0]).toFixed(6)
+            input.longitude = parseFloat(stoElem.coord.split(',')[1]).toFixed(6)
             input.parcel_confidence = confidence
             input.parcelle = stoElem.code
             stats.premier++
@@ -297,7 +360,7 @@ async function fusion (a, b, option, log) {
   return mergeSortStream(f1, f2, compare)
 }
 
-module.exports = async (processingConfig, tmpDir, axios, log) => {
+module.exports = async (pluginConfig, processingConfig, tmpDir, axios, log) => {
   const stats = {
     sur: 0,
     premier: 0,
@@ -346,7 +409,7 @@ module.exports = async (processingConfig, tmpDir, axios, log) => {
           batchComm.push(obj)
           currComm = obj.COMM
         } else if (batchComm.length > 0) {
-          const result = await getParcel(batchComm, stats, processingConfig, axios, log)
+          const result = await getParcel(batchComm, stats, pluginConfig, processingConfig, axios, log)
           currComm = obj.COMM
           batchComm.length = 0
           batchComm.push(obj)
@@ -356,7 +419,7 @@ module.exports = async (processingConfig, tmpDir, axios, log) => {
       },
       flush: async (callback) => {
         if (batchComm.length > 0) {
-          const result = await getParcel(batchComm, stats, processingConfig, axios, log)
+          const result = await getParcel(batchComm, stats, pluginConfig, processingConfig, axios, log)
           callback(null, result)
         }
       }

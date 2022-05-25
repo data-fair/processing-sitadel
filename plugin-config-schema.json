@@ -1,4 +1,10 @@
 {
   "type": "object",
-  "properties": {}
+  "properties": {
+    "urlLimit":{
+      "type": "integer",
+      "title": "Limite de l'URL (en caractères)",
+      "default": 2000
+    }
+  }
 }
