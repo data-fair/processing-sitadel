@@ -13,7 +13,6 @@
           "type": "object",
           "required": ["title"],
           "properties": {
-            "id": { "type": "string", "title": "Identifiant du jeu de donnée" },
             "title": { "type": "string", "title": "Titre du jeu de donnée", "default": "Sitadel" }
           }
         }

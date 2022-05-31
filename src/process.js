@@ -27,8 +27,7 @@ async function geocode (arr, axios, log) {
   await log.info(`Géocodage de ${arr.length} éléments`, '')
   const start = new Date().getTime()
   // add the header for the request
-  let csvString = Object.keys(arr[0]).join(',') + '\n'
-  csvString += csvSync.stringify(arr)
+  const csvString = csvSync.stringify(arr, { header: true })
 
   const form = new FormData()
   form.append('data', csvString, 'filename')
@@ -41,24 +40,47 @@ async function geocode (arr, axios, log) {
   form.append('result_columns', 'latitude')
   form.append('result_columns', 'longitude')
 
-  const response = await axios.post(
-    'https://api-adresse.data.gouv.fr/search/csv/',
-    form,
-    {
-      headers: {
-        ...form.getHeaders()
+  try {
+    const response = await axios.post(
+      'https://api-adresse.data.gouv.fr/search/csv/',
+      form,
+      {
+        headers: {
+          ...form.getHeaders()
+        }
       }
-    }
-  )
-  const duration = new Date().getTime() - start
-  await log.info(`Géocodage réalisé en ${duration.toLocaleString('fr')} ms.`, '')
+    )
 
-  if (!header) {
-    header = true
-    return response.data
+    const duration = new Date().getTime() - start
+    await log.info(`Géocodage réalisé en ${duration.toLocaleString('fr')} ms.`, '')
+
+    let ret = response.data
+
+    // in case of error during the geocoding, data.gouv seems to return the same file.
+    // this part create a new response with a good format
+    const headerRes = response.data.split('\n')[0]
+    if (!(headerRes.includes('result_type') && headerRes.includes('latitude') && headerRes.includes('longitude'))) {
+      await log.info('La réponse du géocodage ne possède pas les résultats')
+      let newResponse
+      for (const line of response.data.split('\n')) {
+        if (line === headerRes) newResponse += line + ',result_type,latitude,longitude'
+        else if (line !== '') newResponse += line + ',,,'
+        if (line !== '') newResponse += '\n'
+      }
+      ret = newResponse
+    }
+
+    if (!header) {
+      header = true
+      return ret
+    }
+    // remove the header
+    return ret.substring(ret.indexOf('\n') + 1)
+  } catch (err) {
+    await log.info(`Erreur ${err.status} sur api-adresse.data.gouv : ${err.statusText}`)
+    console.log(err)
+    throw err
   }
-  // remove the header
-  return response.data.substring(response.data.indexOf('\n') + 1)
 }
 
 async function getParcel (array, globalStats, pluginConfig, processingConfig, axios, log) {
@@ -81,8 +103,8 @@ async function getParcel (array, globalStats, pluginConfig, processingConfig, ax
 
   const start = new Date().getTime()
 
-  // To avoid URL overflow, break
-  const breakRequestAt = pluginConfig.urlLimit
+  // To avoid URL overflow, break. Default at 2000
+  const breakRequestAt = pluginConfig.urlLimit ? pluginConfig.urlLimit : 2000
   if (parseInt((stringRequest.length / breakRequestAt + 1)) > 1) {
     await log.info(`Besoin de ${parseInt((stringRequest.length / breakRequestAt + 1))} requêtes pour couvrir l'ensemble des parcelles de ${array[0].COMM}.`)
   }
@@ -162,6 +184,8 @@ async function getParcel (array, globalStats, pluginConfig, processingConfig, ax
   const duration = new Date().getTime() - start
 
   globalStats.moyReq += duration
+  globalStats.sum += 1
+
   const stats = {
     sur: 0,
     premier: 0,
@@ -179,6 +203,12 @@ async function getParcel (array, globalStats, pluginConfig, processingConfig, ax
     delete input.latitude
     delete input.longitude
     delete input.result_type
+
+    // unescape the '
+    input.ADR_NUM_TER = input.ADR_NUM_TER.replaceAll('\\\'', '\'')
+    input.ADR_LIBVOIE_TER = input.ADR_LIBVOIE_TER.replaceAll('\\\'', '\'')
+    input.ADR_LIEUDIT_TER = input.ADR_LIEUDIT_TER.replaceAll('\\\'', '\'')
+    input.ADR_LOCALITE_TER = input.ADR_LOCALITE_TER.replaceAll('\\\'', '\'')
 
     if (input.num_cadastre1.replace(/\D/g, '').length) {
       const codeParcelleTotal = commParcels.filter(elem => elem.code.match(new RegExp(`${array[0].COMM}.....${input.num_cadastre1.replace(/\D/g, '').padStart(4, '0')}`)))
@@ -291,6 +321,14 @@ async function getParcel (array, globalStats, pluginConfig, processingConfig, ax
       stats.erreur++
     }
     delete input.geocoding
+
+    if (globalStats.stoHeader) {
+      const diffHeader = globalStats.stoHeader.filter((elem) => !Object.keys(input).some((elem2) => elem === elem2))
+      for (const col of diffHeader) {
+        await log.info(`Il manque la colonne ${col}.`)
+        input[col] = undefined
+      }
+    }
     ret.push(input)
   }
   const sum = stats.sur + stats.geocode + stats.premier + stats.erreur
@@ -300,8 +338,10 @@ async function getParcel (array, globalStats, pluginConfig, processingConfig, ax
   globalStats.premier += stats.premier
   globalStats.erreur += stats.erreur
 
+  // console.log(ret)
   if (!globalStats.header) {
     globalStats.header = true
+    globalStats.stoHeader = Object.keys(ret[0])
     return csvSync.stringify(ret, { header: true })
   }
   return csvSync.stringify(ret)
@@ -332,7 +372,6 @@ async function fusion (a, b, option, log) {
   const h1 = new Promise(function (resolve) {
     fs.createReadStream(a, { objectMode: true }).on('data', function (data) { resolve(data.toString().split('\n')[0]) })
   })
-
   const h2 = new Promise(function (resolve) {
     fs.createReadStream(b, { objectMode: true }).on('data', function (data) { resolve(data.toString().split('\n')[0]) })
   })
@@ -345,7 +384,6 @@ async function fusion (a, b, option, log) {
   }
 
   let f1 = fs.createReadStream(a, { objectMode: true }).pipe(csv.parse({ columns: true, delimiter: ';' }))
-
   let f2 = fs.createReadStream(b, { objectMode: true }).pipe(csv.parse({ columns: true, delimiter: ';' }))
 
   if (option.length > 0) {
@@ -366,8 +404,10 @@ module.exports = async (pluginConfig, processingConfig, tmpDir, axios, log) => {
     premier: 0,
     geocode: 0,
     erreur: 0,
+    moyReq: 0,
+    sum: 0,
     header: false,
-    moyReq: 0
+    stoHeader: undefined
   }
   let currComm
   const batchComm = []
@@ -386,6 +426,11 @@ module.exports = async (pluginConfig, processingConfig, tmpDir, axios, log) => {
     new stream.Transform({
       objectMode: true,
       transform: async (obj, _, next) => {
+        // escape the ' with a \ to avoid issue during the geocoding
+        obj.ADR_NUM_TER = obj.ADR_NUM_TER.replaceAll('\'', '\\\'')
+        obj.ADR_LIBVOIE_TER = obj.ADR_LIBVOIE_TER.replaceAll('\'', '\\\'')
+        obj.ADR_LIEUDIT_TER = obj.ADR_LIEUDIT_TER.replaceAll('\'', '\\\'')
+        obj.ADR_LOCALITE_TER = obj.ADR_LOCALITE_TER.replaceAll('\'', '\\\'')
         tab.push(obj)
         if (tab.length >= 10000) {
           const result = await geocode(tab, axios, log)
@@ -430,5 +475,5 @@ module.exports = async (pluginConfig, processingConfig, tmpDir, axios, log) => {
   )
   const sum = stats.sur + stats.geocode + stats.premier + stats.erreur
   await log.info(`Sûr : ${Math.round(stats.sur * 100 / sum)}%, Géocodé : ${Math.round(stats.geocode * 100 / sum)}%, Géododé peu précis : ${Math.round(stats.premier * 100 / sum)}%, Non défini : ${Math.round(stats.erreur * 100 / sum)}%, Total : ${sum}`)
-  await log.info(`Moyenne requête parcelles : ${Math.round(stats.moyReq / sum)} ms`)
+  await log.info(`Moyenne requête parcelles : ${Math.round(stats.moyReq / stats.sum)} ms`)
 }

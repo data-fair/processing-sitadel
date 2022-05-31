@@ -8,7 +8,7 @@ exports.run = async ({ pluginConfig, processingConfig, tmpDir, axios, log, patch
   await log.info(`Url dataset information parcelles : ${processingConfig.urlParcelData.href}`)
   await log.info(`Fichier à traiter : ${processingConfig.processFile}`)
   await log.info(`Supprimer les fichiers téléchargés : ${processingConfig.clearFiles}`)
-  await log.info(`Limite URL : ${pluginConfig.urlLimit}`)
+  await log.info(`Limite URL : ${pluginConfig.urlLimit ? pluginConfig.urlLimit : 2000}`)
   await download(processingConfig, tmpDir, axios, log)
   await process(pluginConfig, processingConfig, tmpDir, axios, log)
   await upload(processingConfig, tmpDir, axios, log, patchConfig)
