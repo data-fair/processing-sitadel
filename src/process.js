@@ -85,9 +85,9 @@ async function geocode (arr, axios, log) {
 
 async function getParcel (array, globalStats, pluginConfig, processingConfig, axios, log) {
   let stringRequest = ''
-  let arrayUniNum = [...new Set(array.map(elem => elem.num_cadastre1.replace(/\D/g, '').padStart(4, '0')))]
+  let arrayUniNum = [...new Set(array.map(elem => elem.num_cadastre1.replace(/\D/g, '').padStart(4, '0').slice(-4)))]
 
-  const ecart = 197
+  const ecart = 185
   do {
     stringRequest += `/${array[0].COMM}.{5}(${arrayUniNum.slice(0, ecart).join('|')})/`
     arrayUniNum = arrayUniNum.slice(ecart, arrayUniNum.length + 1)
@@ -98,7 +98,7 @@ async function getParcel (array, globalStats, pluginConfig, processingConfig, ax
     size: 10000
   }
 
-  // data is the array containing all of the results of requests
+  // commParcels is the array containing all of the results of requests
   const commParcels = []
 
   const start = new Date().getTime()
