@@ -43,7 +43,7 @@ describe('Station service processing', () => {
         id: 'sitadel-test-id'
       },
       departements: ['56'],
-      processFile: 'logements',
+      processFile: 'amenager',
       urlParcelData: {
         href: config.parcelsUrl
       },

@@ -1,548 +1,732 @@
 [
-    {
-        "key": "REG",
-        "title": "Code de la région",
-        "description": "Code de la région du lieu des travaux",
-        "type": "string",
-        "x-refersTo": "http://rdf.insee.fr/def/geo#codeRegion"
-    },
-    {
-        "key": "DEP",
-        "title": "Code du département",
-        "description": "Code du département du lieu des travaux",
-        "type": "string",
-        "x-refersTo": "http://rdf.insee.fr/def/geo#codeDepartement"
-    },
-    {
-        "key": "COMM",
-        "title": "Code INSEE de la commune",
-        "description": "Code de la commune du lieu des travaux",
-        "type": "string",
-        "x-refersTo": "http://rdf.insee.fr/def/geo#codeCommune"
-    },
-    {
-        "key": "Type_DAU",
-        "title": "Demande d'autorisation d'urbanisme",
-        "description": "Type de DAU -- demande d'autorisation d'urbanisme (PC ou DP)",
-        "type": "string",
-        "x-labels": {
-            "PC": "Permis de construire",
-            "DP": "Déclaration Préalable"
-        },
-        "enum": [
-            "PC",
-            "DP"
-        ]
-    },
-    {
-        "key": "Num_DAU",
-        "title": "Numéro demande d'autorisation d'urbanisme",
-        "description": "Numéro d'enregistrement de la demande d'autorisation d'urbanisme",
-        "type": "string"
-    },
-    {
-        "key": "Etat_DAU",
-        "title": "Etat d'avancement du projet",
-        "description": "Etat d'avancement du projet",
-        "type": "string",
-        "ignoreDetection": true,
-        "x-labels": {
-            "2": "Autorisé",
-            "4": "Annulé",
-            "5": "Commencé",
-            "6": "Terminé"
-        },
-        "enum": [
-            "2",
-            "6",
-            "4",
-            "5"
-        ]
-    },
-    {
-        "key": "DATE_REELLE_AUTORISATION",
-        "title": "Date réelle d'autorisation",
-        "description": "Date réelle d'autorisation (PC) ou de non-opposition (DP) initiale",
-        "type": "date"
-    },
-    {
-        "key": "DATE_REELLE_DOC",
-        "title": "Date ouverture de chantier",
-        "description": "Date réelle d'ouverture de chantier",
-        "type": "date"
-    },
-    {
-        "key": "DATE_REELLE_DAACT",
-        "title": "Date réelle d'achèvement des travaux",
-        "description": "Date réelle d'achèvement des travaux",
-        "type": "date"
-    },
-    {
-        "key": "DPC_AUT",
-        "title": "Date de prise en compte de l'autorisation initiale",
-        "description": "Date  de prise en compte  de l'autorisation initiale",
-        "type": "integer"
-    },
-    {
-        "key": "DPC_DOC",
-        "title": "Date de prise en compte de l'ouverture du chantier",
-        "description": "Date de prise en compte de l'ouverture du chantier",
-        "type": "integer"
-    },
-    {
-        "key": "DPC_DERN",
-        "title": "Date de dernière mise à jour des données",
-        "description": "Date de dernière mise à jour des données",
-        "type": "integer"
-    },
-    {
-        "key": "CAT_DEM",
-        "title": "Catégorie du demandeur",
-        "description": "Catégorie du demandeur (maître d'ouvrage) selon Sitadel",
-        "type": "string"
-    },
-    {
-        "key": "APE_DEM",
-        "title": "Code d'activité principale de l'établissement",
-        "description": "Code d'activité principale de l'établissement d'un demandeur avéré en tant que personne morale",
-        "type": "string"
-    },
-    {
-        "key": "CJ_DEM",
-        "title": "Catégorie juridique d'un demandeur",
-        "description": "Catégorie juridique d'un demandeur avéré en tant que personne morale",
-        "type": "integer"
-    },
-    {
-        "key": "DENOM_DEM",
-        "title": "Dénomination du demandeur",
-        "description": "Dénomination d'un demandeur avéré en tant que personne morale",
-        "type": "string"
-    },
-    {
-        "key": "SIREN_DEM",
-        "title": "Numéro SIREN d'un demandeur",
-        "description": "Numéro SIREN d'un demandeur avéré en tant que personne morale",
-        "type": "string",
-        "x-refersTo": "http://dbpedia.org/ontology/siren"
-    },
-    {
-        "key": "SIRET_DEM",
-        "title": "Numéro SIRET d'un demandeur",
-        "description": "Numéro SIRET d'un demandeur avéré en tant que personne morale",
-        "type": "string",
-        "x-refersTo": "http://www.datatourisme.fr/ontology/core/1.0/#siret"
-    },
-    {
-        "key": "CODPOST_DEM",
-        "title": "Code postal du demandeur",
-        "description": "Code postal du demandeur",
-        "type": "string"
-    },
-    {
-        "key": "LOCALITE_DEM",
-        "title": "Localité du demandeur",
-        "description": "Localité du demandeur",
-        "type": "string"
-    },
-    {
-        "key": "REC_ARCHI",
-        "title": "Indicateur de recours à un architecte",
-        "description": "Indicateur de recours à un architecte",
-        "type": "boolean"
-    },
-    {
-        "key": "ADR_NUM_TER",
-        "title": "ADR_NUM_TER",
-        "description": "Numéro de voie du terrain",
-        "type": "string"
-    },
-    {
-        "key": "ADR_TYPEVOIE_TER",
-        "title": "ADR_TYPEVOIE_TER",
-        "description": "Type de voie du terrain",
-        "type": "string"
-    },
-    {
-        "key": "ADR_LIBVOIE_TER",
-        "title": "ADR_LIBVOIE_TER",
-        "description": "Libellé de la voie du terrain",
-        "type": "string"
-    },
-    {
-        "key": "ADR_LIEUDIT_TER",
-        "title": "ADR_LIEUDIT_TER",
-        "description": "Lieu-dit du terrain",
-        "type": "string"
-    },
-    {
-        "key": "ADR_LOCALITE_TER",
-        "title": "ADR_LOCALITE_TER",
-        "description": "Localité du terrain",
-        "type": "string"
-    },
-    {
-        "key": "ADR_CODPOST_TER",
-        "title": "ADR_CODPOST_TER",
-        "description": "Code postal du terrain",
-        "type": "string",
-        "x-refersTo": "http://schema.org/postalCode"
-    },
-    {
-        "key": "sec_cadastre1",
-        "title": "sec_cadastre1",
-        "description": "Section cadastrale 1",
-        "type": "string"
-    },
-    {
-        "key": "num_cadastre1",
-        "title": "num_cadastre1",
-        "description": "Numéro parcelle cadastrale 1",
-        "type": "string"
-    },
-    {
-        "key": "sec_cadastre2",
-        "title": "sec_cadastre2",
-        "description": "Section cadastrale 2",
-        "type": "string"
-    },
-    {
-        "key": "num_cadastre2",
-        "title": "num_cadastre2",
-        "description": "Numéro parcelle cadastrale 2",
-        "type": "string"
-    },
-    {
-        "key": "sec_cadastre3",
-        "title": "sec_cadastre3",
-        "description": "Section cadastrale 3",
-        "type": "string"
-    },
-    {
-        "key": "num_cadastre3",
-        "title": "num_cadastre3",
-        "description": "Numéro parcelle cadastrale 3",
-        "type": "string"
-    },
-    {
-        "key": "SUPERFICIE_TERRAIN",
-        "title": "SUPERFICIE_TERRAIN",
-        "description": "Superficie du terrain",
-        "type": "integer"
-    },
-    {
-        "key": "ZONE_OP",
-        "title": "Zone opératoire",
-        "description": "Code zone opératoire",
-        "type": "string",
-        "ignoreDetection": true,
-        "x-labels": {
-            "1": "Lotissement",
-            "2": "Zone d'aménagement concerté",
-            "3": "Association foncière urbaine",
-            "4": "Hors zone ou inconnu"
-        },
-        "enum": [
-            "1",
-            "2",
-            "3",
-            "4"
-        ]
-    },
-    {
-        "key": "NATURE_PROJET",
-        "title": "Nature du projet",
-        "description": "Code « nature du projet »",
-        "type": "string",
-        "ignoreDetection": true,
-        "x-labels": {
-            "1": "Nouvelle construction",
-            "2": "Travaux sur construction existante"
-        },
-        "enum": [
-            "1",
-            "2"
-        ]
-    },
-    {
-        "key": "I_EXTENSION",
-        "title": "Indicateur d'extension",
-        "description": "Indicateur d'extension",
-        "type": "boolean"
-    },
-    {
-        "key": "I_SURELEVATION",
-        "title": "Indicateur de surélévation",
-        "description": "Indicateur de surélévation",
-        "type": "boolean"
-    },
-    {
-        "key": "I_NIVSUPP",
-        "title": "Indicateur de création de niveau(x)",
-        "description": "Indicateur de création de niveau(x) supplémentaire(s)",
-        "type": "boolean"
-    },
-    {
-        "key": "NB_NIV_MAX",
-        "title": "NB_NIV_MAX",
-        "description": "Nombre de niveaux du bâtiment le plus élevé",
-        "type": "string"
-    },
-    {
-        "key": "UTILISATION",
-        "title": "Utilisation",
-        "description": "Utilisation: Occupation personnelle, Vente, Location, vente - location, non rempli ",
-        "type": "string",
-        "ignoreDetection": true,
-        "x-labels": {
-            "1": "Occupation personnelle",
-            "2": "Vente",
-            "3": "Location",
-            "4": "Vente / Location",
-            "5": "Non renseigné"
-        },
-        "enum": [
-            "1",
-            "2",
-            "3",
-            "4",
-            "5"
-        ]
-    },
-    {
-        "key": "RES_PRINCIP_OU_SECOND",
-        "title": "RES_PRINCIP_OU_SECOND",
-        "description": "Residence principale ou secondaire",
-        "type": "string",
-        "ignoreDetection": true,
-        "x-labels": {
-            "1": "Résidence principale",
-            "2": "Résidence secondaire",
-            "3": "Non renseigné"
-        },
-        "enum": [
-            "1",
-            "2",
-            "3"
-        ]
-    },
-    {
-        "key": "TYP_ANNEXE",
-        "title": "Type d'annexe",
-        "description": "Type d'annexe",
-        "type": "string",
-        "ignoreDetection": true,
-        "x-labels": {
-            "1": "Piscine",
-            "2": "Garage",
-            "3": "Véranda",
-            "4": "Abri de jardin",
-            "5": "Autre annexe",
-            "6": "Plusieurs annexes",
-            "7": "Aucune annexe"
-        },
-        "enum": [
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7"
-        ]
-    },
-    {
-        "key": "RESIDENCE",
-        "title": "Type de résidence",
-        "description": "Type de résidence",
-        "type": "string",
-        "ignoreDetection": true,
-        "x-labels": {
-            "1": "Résidence pour personnes âgées",
-            "2": "Résidence étudiante",
-            "3": "Résidence de tourisme",
-            "4": "Résidence hôtelière à vocation sociale",
-            "5": "Résidence sociale",
-            "6": "Résidence pour handicapés",
-            "7": "Autre résidence",
-            "8": "Projet mixte",
-            "9": "Non renseigné"
-        },
-        "enum": [
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9"
-        ]
-    },
-    {
-        "key": "NB_LGT_TOT_CREES",
-        "title": "NB_LGT_TOT_CREES",
-        "description": "Nombre total de logements créés",
-        "type": "string"
-    },
-    {
-        "key": "NB_LGT_IND_CREES",
-        "title": "NB_LGT_IND_CREES",
-        "description": "Nombre de logements individuels créés",
-        "type": "string"
-    },
-    {
-        "key": "NB_LGT_COL_CREES",
-        "title": "NB_LGT_COL_CREES",
-        "description": "Nombre de logements collectifs créés",
-        "type": "string"
-    },
-    {
-        "key": "NB_LGT_DEMOLIS",
-        "title": "NB_LGT_DEMOLIS",
-        "description": "Nombre de logements démolis",
-        "type": "string"
-    },
-    {
-        "key": "NB_LGT_1P",
-        "title": "NB_LGT_1P",
-        "description": "Nombre de logements de 1 pièce créés",
-        "type": "string"
-    },
-    {
-        "key": "NB_LGT_2P",
-        "title": "NB_LGT_2P",
-        "description": "Nombre de logements de 2 pièces créés",
-        "type": "string"
-    },
-    {
-        "key": "NB_LGT_3P",
-        "title": "NB_LGT_3P",
-        "description": "Nombre de logements de 3 pièces créés",
-        "type": "string"
-    },
-    {
-        "key": "NB_LGT_4P",
-        "title": "NB_LGT_4P",
-        "description": "Nombre de logements de 4 pièces créés",
-        "type": "string"
-    },
-    {
-        "key": "NB_LGT_5P",
-        "title": "NB_LGT_5P",
-        "description": "Nombre de logements de 5 pièces créés",
-        "type": "string"
-    },
-    {
-        "key": "NB_LGT_6P_PLUS",
-        "title": "NB_LGT_6P_PLUS",
-        "description": "Nombre de logements de 6 pièces ou plus créés",
-        "type": "string"
-    },
-    {
-        "key": "NB_LGT_PRET_LOC_SOCIAL",
-        "title": "NB_LGT_PRET_LOC_SOCIAL",
-        "description": "Nb de logements locatifs sociaux",
-        "type": "string"
-    },
-    {
-        "key": "NB_LGT_ACC_SOC_HORS_PTZ",
-        "title": "NB_LGT_ACC_SOC_HORS_PTZ",
-        "description": "Nb de logements aidé (hors ptz)",
-        "type": "string"
-    },
-    {
-        "key": "NB_LGT_PTZ",
-        "title": "NB_LGT_PTZ",
-        "description": "Nb de logements ptz",
-        "type": "string"
-    },
-    {
-        "key": "SURF_HAB_AVANT",
-        "title": "SURF_HAB_AVANT",
-        "description": "Surface de plancher de la destination ' Habitation ' existante avant travaux",
-        "type": "string"
-    },
-    {
-        "key": "SURF_HAB_CREEE",
-        "title": "SURF_HAB_CREEE",
-        "description": "Surface de plancher de la destination ' Habitation ' nouvelle construite",
-        "type": "string"
-    },
-    {
-        "key": "SURF_HAB_ISSUE_TRANSFO",
-        "title": "SURF_HAB_ISSUE_TRANSFO",
-        "description": "Surface de plancher de la destination ' Habitation ' créée par changement de destination",
-        "type": "string"
-    },
-    {
-        "key": "SURF_HAB_DEMOLIE",
-        "title": "_HAB_DEMOLIE",
-        "description": "Surface de plancher de la destination ' Habitation ' supprimée (démolie)",
-        "type": "string"
-    },
-    {
-        "key": "SURF_HAB_TRANSFORMEE",
-        "title": "SURF_HAB_TRANSFORMEE",
-        "description": "Surface de plancher de la destination ' Habitation ' supprimée par changement de destination",
-        "type": "string"
-    },
-    {
-        "key": "SURF_LOC_AVANT",
-        "title": "SURF_LOC_AVANT",
-        "description": "Surface de plancher de locaux non résidentiels (i.e. autres que d'habitation) existante avant travaux",
-        "type": "string"
-    },
-    {
-        "key": "SURF_LOC_CREEE",
-        "title": "SURF_LOC_CREEE",
-        "description": "Surface de plancher de locaux non résidentiels (i.e. autres que d'habitation) nouvelle construite",
-        "type": "string"
-    },
-    {
-        "key": "SURF_LOC_ISSUE_TRANSFO",
-        "title": "SURF_LOC_ISSUE_TRANSFO",
-        "description": "Surface de plancher de locaux non résidentiels (i.e. autres que d'habitation) créée par changement de destination",
-        "type": "string"
-    },
-    {
-        "key": "SURF_LOC_DEMOLIE",
-        "title": "SURF_LOC_DEMOLIE",
-        "description": "Surface de plancher de locaux non résidentiels (i.e. autres que d'habitation) démolie",
-        "type": "string"
-    },
-    {
-        "key": "SURF_LOC_TRANSFORMEE",
-        "title": "SURF_LOC_TRANSFORMEE",
-        "description": "Surface de plancher de locaux non résidentiels (i.e. autres que d'habitation) supprimée par changement de destination",
-        "type": "string"
-    },
-    {
-        "key": "latitude",
-        "title": "latitude",
-        "description": "Coordonné géographique qui permet de se situer par rapport à l'équateur",
-        "type": "number",
-        "x-refersTo": "http://schema.org/latitude"
-    },
-    {
-        "key": "longitude",
-        "title": "longitude",
-        "description": "Coordonnée géographique qui permet de se situer par rapport au méridien de Greenwich",
-        "type": "number",
-        "x-refersTo": "http://schema.org/longitude"
-    },
-    {
-        "key": "parcel_confidence",
-        "title": "parcel_confidence",
-        "description": "pourcentage de confiance concernant le code de la parcelle",
-        "type": "string"
-    },
-    {
-        "key": "parcelle",
-        "title": "Code de la parcelle",
-        "description": "Le code de la parcelle cadastrale est le numéro unique attribué par le Service du cadastre pour identifier une parcelle cadastrale au niveau national",
-        "type": "string",
-        "x-refersTo": "http://dbpedia.org/ontology/codeLandRegistry"
-    }
+  {
+    "key": "REG",
+    "title": "Code de la région",
+    "description": "Code de la région du lieu des travaux",
+    "type": "string",
+    "x-refersTo": "http://rdf.insee.fr/def/geo#codeRegion"
+  },
+  {
+    "key": "DEP",
+    "title": "Code du département",
+    "description": "Code du département du lieu des travaux",
+    "type": "string",
+    "x-refersTo": "http://rdf.insee.fr/def/geo#codeDepartement"
+  },
+  {
+    "key": "COMM",
+    "title": "Code INSEE de la commune",
+    "description": "Code de la commune du lieu des travaux",
+    "type": "string",
+    "x-refersTo": "http://rdf.insee.fr/def/geo#codeCommune"
+  },
+  {
+    "key": "Type_DAU",
+    "title": "Demande d'autorisation d'urbanisme",
+    "description": "Type de DAU -- demande d'autorisation d'urbanisme (PC ou DP)",
+    "type": "string",
+    "x-labels": {"PC": "Permis de construire", "DP": "Déclaration Préalable"},
+    "enum": ["PC", "DP"]
+  },
+  {
+    "key": "Num_DAU",
+    "title": "Numéro demande d'autorisation d'urbanisme",
+    "description": "Numéro d'enregistrement de la demande d'autorisation d'urbanisme",
+    "type": "string"
+  },
+  {
+    "key": "Etat_DAU",
+    "title": "Etat d'avancement du projet",
+    "description": "Etat d'avancement du projet",
+    "type": "string",
+    "ignoreDetection": true,
+    "x-labels": {
+      "2": "Autorisé",
+      "4": "Annulé",
+      "5": "Commencé",
+      "6": "Terminé"
+    },
+    "enum": ["2", "6", "4", "5"]
+  },
+  {
+    "key": "DATE_REELLE_AUTORISATION",
+    "title": "Date réelle d'autorisation",
+    "description": "Date réelle d'autorisation (PC) ou de non-opposition (DP) initiale",
+    "type": "date"
+  },
+  {
+    "key": "DATE_REELLE_DOC",
+    "title": "Date ouverture de chantier",
+    "description": "Date réelle d'ouverture de chantier",
+    "type": "date"
+  },
+  {
+    "key": "DATE_REELLE_DAACT",
+    "title": "Date réelle d'achèvement des travaux",
+    "description": "Date réelle d'achèvement des travaux",
+    "type": "date"
+  },
+  {"key": "AN_DEPOT", "title": "Année de dépôt de la DAU", "type": "integer"},
+  {
+    "key": "DPC_PREM",
+    "title": "Date premier évènement",
+    "description": "Date (mois) de prise en compte du premier évènement reçu dans Sitadel (AAAAMM)",
+    "type": "integer"
+  },
+  {
+    "key": "DPC_AUT",
+    "title": "Date de prise en compte de l'autorisation initiale",
+    "description": "Date  de prise en compte  de l'autorisation initiale",
+    "type": "integer"
+  },
+  {
+    "key": "DPC_DOC",
+    "title": "Date de prise en compte de l'ouverture du chantier",
+    "description": "Date de prise en compte de l'ouverture du chantier",
+    "type": "integer"
+  },
+  {
+    "key": "DPC_DERN",
+    "title": "Date de dernière mise à jour des données",
+    "description": "Date de dernière mise à jour des données",
+    "type": "integer"
+  },
+  {
+    "key": "CAT_DEM",
+    "title": "Catégorie du demandeur",
+    "description": "Catégorie du demandeur (maître d'ouvrage) selon Sitadel",
+    "type": "string"
+  },
+  {
+    "key": "APE_DEM",
+    "title": "Code d'activité principale de l'établissement",
+    "description": "Code d'activité principale de l'établissement d'un demandeur avéré en tant que personne morale",
+    "type": "string"
+  },
+  {
+    "key": "CJ_DEM",
+    "title": "Catégorie juridique d'un demandeur",
+    "description": "Catégorie juridique d'un demandeur avéré en tant que personne morale",
+    "type": "integer"
+  },
+  {
+    "key": "DENOM_DEM",
+    "title": "Dénomination du demandeur",
+    "description": "Dénomination d'un demandeur avéré en tant que personne morale",
+    "type": "string"
+  },
+  {
+    "key": "SIREN_DEM",
+    "title": "Numéro SIREN d'un demandeur",
+    "description": "Numéro SIREN d'un demandeur avéré en tant que personne morale",
+    "type": "string",
+    "x-refersTo": "http://dbpedia.org/ontology/siren"
+  },
+  {
+    "key": "SIRET_DEM",
+    "title": "Numéro SIRET d'un demandeur",
+    "description": "Numéro SIRET d'un demandeur avéré en tant que personne morale",
+    "type": "string",
+    "x-refersTo": "http://www.datatourisme.fr/ontology/core/1.0/#siret"
+  },
+  {
+    "key": "CODPOST_DEM",
+    "title": "Code postal du demandeur",
+    "description": "Code postal du demandeur",
+    "type": "string"
+  },
+  {
+    "key": "LOCALITE_DEM",
+    "title": "Localité du demandeur",
+    "description": "Localité du demandeur",
+    "type": "string"
+  },
+  {
+    "key": "REC_ARCHI",
+    "title": "Indicateur de recours à un architecte",
+    "description": "Indicateur de recours à un architecte",
+    "type": "boolean"
+  },
+  {
+    "key": "ADR_NUM_TER",
+    "title": "ADR_NUM_TER",
+    "description": "Numéro de voie du terrain",
+    "type": "string"
+  },
+  {
+    "key": "ADR_TYPEVOIE_TER",
+    "title": "ADR_TYPEVOIE_TER",
+    "description": "Type de voie du terrain",
+    "type": "string"
+  },
+  {
+    "key": "ADR_LIBVOIE_TER",
+    "title": "ADR_LIBVOIE_TER",
+    "description": "Libellé de la voie du terrain",
+    "type": "string"
+  },
+  {
+    "key": "ADR_LIEUDIT_TER",
+    "title": "ADR_LIEUDIT_TER",
+    "description": "Lieu-dit du terrain",
+    "type": "string"
+  },
+  {
+    "key": "ADR_LOCALITE_TER",
+    "title": "ADR_LOCALITE_TER",
+    "description": "Localité du terrain",
+    "type": "string"
+  },
+  {
+    "key": "ADR_CODPOST_TER",
+    "title": "ADR_CODPOST_TER",
+    "description": "Code postal du terrain",
+    "type": "string",
+    "x-refersTo": "http://schema.org/postalCode"
+  },
+  {
+    "key": "sec_cadastre1",
+    "title": "sec_cadastre1",
+    "description": "Section cadastrale 1",
+    "type": "string"
+  },
+  {
+    "key": "num_cadastre1",
+    "title": "num_cadastre1",
+    "description": "Numéro parcelle cadastrale 1",
+    "type": "string"
+  },
+  {
+    "key": "sec_cadastre2",
+    "title": "sec_cadastre2",
+    "description": "Section cadastrale 2",
+    "type": "string"
+  },
+  {
+    "key": "num_cadastre2",
+    "title": "num_cadastre2",
+    "description": "Numéro parcelle cadastrale 2",
+    "type": "string"
+  },
+  {
+    "key": "sec_cadastre3",
+    "title": "sec_cadastre3",
+    "description": "Section cadastrale 3",
+    "type": "string"
+  },
+  {
+    "key": "num_cadastre3",
+    "title": "num_cadastre3",
+    "description": "Numéro parcelle cadastrale 3",
+    "type": "string"
+  },
+  {
+    "key": "SUPERFICIE_TERRAIN",
+    "title": "SUPERFICIE_TERRAIN",
+    "description": "Superficie du terrain",
+    "type": "integer"
+  },
+  {
+    "key": "ZONE_OP",
+    "title": "Zone opératoire",
+    "description": "Code zone opératoire",
+    "type": "string",
+    "ignoreDetection": true,
+    "x-labels": {
+      "1": "Lotissement",
+      "2": "Zone d'aménagement concerté",
+      "3": "Association foncière urbaine",
+      "4": "Hors zone ou inconnu"
+    },
+    "enum": ["1", "2", "3", "4"]
+  },
+  {
+    "key": "NATURE_PROJET_DECLAREE",
+    "title": "Nature du projet déclarée",
+    "description": "Code « nature du projet » déclarée par le demandeur",
+    "type": "string",
+    "ignoreDetection": true,
+    "x-labels": {
+      "1": "Nouvelle construction",
+      "2": "Travaux sur construction existante"
+    },
+    "enum": ["1", "2"]
+  },
+  {
+    "key": "NATURE_PROJET_COMPLETEE",
+    "title": "Nature du projet détaillée",
+    "description": "Code « nature du projet » détaillée",
+    "type": "string",
+    "ignoreDetection": true,
+    "x-labels": {
+      "1": "Nouvelle construction",
+      "2": "Transformation sans extension ni diminution de surface",
+      "3": "Transformation avec extension de surface",
+      "4": "Transformation avec diminution de surface",
+      "5": "Extension de surface sans transformation",
+      "6": "Diminution de surface sans transformation"
+    },
+    "enum": ["1", "2", "3", "4", "5", "6"]
+  },
+  {
+    "key": "DESTINATION_PRINCIPALE",
+    "title": "Destination principale",
+    "type": "string",
+    "ignoreDetection": true,
+    "x-labels": {
+      "1": "Habitation",
+      "2": "Hébergement hôtelier",
+      "3": "Bureaux",
+      "4": "Commerce",
+      "5": "Artisanat",
+      "6": "Industrie",
+      "7": "Agriculture",
+      "8": "Entrepôt",
+      "9": "Service public ou d'intérêt collectif"
+    },
+    "enum": ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+  },
+  {
+    "key": "TYPE_PRINCIP_LOGTS_CREES",
+    "title": "Type principal des logements",
+    "type": "string",
+    "ignoreDetection": true,
+    "x-labels": {
+      "1": "Un logement individuel",
+      "2": "PLusieurs logements individuels",
+      "3": "Collectif hors résidence",
+      "4": "Résidence"
+    },
+    "enum": ["1", "2", "3", "4"]
+  },
+  {
+    "key": "TYPE_TRANSFO_PRINCIPAL",
+    "title": "Type principal de transformation",
+    "description": "Type principal de la transformation",
+    "type": "string",
+    "ignoreDetection": true,
+    "x-labels": {
+      "1": "Transformation de locaux en logements",
+      "2": "Transformation de logements",
+      "3": "Transformation de logements en locaux non résidentiels",
+      "4": "Transformation de locaux non rédidentiels"
+    },
+    "enum": ["1", "2", "3", "4"]
+  },
+  {
+    "key": "TYPE_PRINCIP_LOCAUX_TRANSFORMES",
+    "title": "Type principal des locaux d'origine transformés",
+    "description": "Type principal des locaux d'origine transformés",
+    "type": "string",
+    "ignoreDetection": true,
+    "x-labels": {
+      "1": "Habitation",
+      "2": "Hébergement hôtelier",
+      "3": "Bureaux",
+      "4": "Commerce",
+      "5": "Artisanat",
+      "6": "Industrie",
+      "7": "Agriculture",
+      "8": "Entrepôt",
+      "9": "Service public ou d'intérêt collectif"
+    },
+    "enum": ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+  },
+  {
+    "key": "I_EXTENSION",
+    "title": "Indicateur d'extension",
+    "description": "Indicateur d'extension",
+    "type": "boolean"
+  },
+  {
+    "key": "I_SURELEVATION",
+    "title": "Indicateur de surélévation",
+    "description": "Indicateur de surélévation",
+    "type": "boolean"
+  },
+  {
+    "key": "I_NIVSUPP",
+    "title": "Indicateur de création de niveau(x)",
+    "description": "Indicateur de création de niveau(x) supplémentaire(s)",
+    "type": "boolean"
+  },
+  {
+    "key": "NB_NIV_MAX",
+    "title": "NB_NIV_MAX",
+    "description": "Nombre de niveaux du bâtiment le plus élevé",
+    "type": "string"
+  },
+  {
+    "key": "UTILISATION",
+    "title": "Utilisation",
+    "description": "Utilisation: Occupation personnelle, Vente, Location, vente - location, non rempli ",
+    "type": "string",
+    "ignoreDetection": true,
+    "x-labels": {
+      "1": "Occupation personnelle",
+      "2": "Vente",
+      "3": "Location",
+      "4": "Vente / Location",
+      "5": "Non renseigné"
+    },
+    "enum": ["1", "2", "3", "4", "5"]
+  },
+  {
+    "key": "RES_PRINCIP_OU_SECOND",
+    "title": "RES_PRINCIP_OU_SECOND",
+    "description": "Residence principale ou secondaire",
+    "type": "string",
+    "ignoreDetection": true,
+    "x-labels": {
+      "1": "Résidence principale",
+      "2": "Résidence secondaire",
+      "3": "Non renseigné"
+    },
+    "enum": ["1", "2", "3"]
+  },
+  {
+    "key": "TYP_ANNEXE",
+    "title": "Type d'annexe",
+    "description": "Type d'annexe",
+    "type": "string",
+    "ignoreDetection": true,
+    "x-labels": {
+      "1": "Piscine",
+      "2": "Garage",
+      "3": "Véranda",
+      "4": "Abri de jardin",
+      "5": "Autre annexe",
+      "6": "Plusieurs annexes",
+      "7": "Aucune annexe"
+    },
+    "enum": ["1", "2", "3", "4", "5", "6", "7"]
+  },
+  {
+    "key": "I_PISCINE",
+    "title": "Piscine",
+    "description": "Présence d'une piscine dans le projet",
+    "type": "boolean"
+  },
+  {
+    "key": "I_GARAGE",
+    "title": "Garage",
+    "description": "Présence d'un garage dans le projet",
+    "type": "boolean"
+  },
+  {
+    "key": "I_VERANDA",
+    "title": "Veranda",
+    "description": "Présence d'une veranda dans le projet",
+    "type": "boolean"
+  },
+  {
+    "key": "I_ABRI_JARDIN",
+    "title": "Abri de jardin",
+    "description": "Présence d'un abri de jardin dans le projet",
+    "type": "boolean"
+  },
+  {
+    "key": "I_AUTRE_ANNEXE",
+    "title": "Autre annexe",
+    "description": "Présence d'une autre annexe dans le projet",
+    "type": "boolean"
+  },
+  {
+    "key": "RESIDENCE",
+    "title": "Type de résidence",
+    "description": "Type de résidence",
+    "type": "string",
+    "ignoreDetection": true,
+    "x-labels": {
+      "1": "Résidence pour personnes âgées",
+      "2": "Résidence étudiante",
+      "3": "Résidence de tourisme",
+      "4": "Résidence hôtelière à vocation sociale",
+      "5": "Résidence sociale",
+      "6": "Résidence pour handicapés",
+      "7": "Autre résidence",
+      "8": "Projet mixte",
+      "9": "Non renseigné"
+    },
+    "enum": ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+  },
+  {
+    "key": "RES_PERS_AGEES",
+    "title": "Résidence personnes agées",
+    "description": "Présence d'une résidence pour personnes âgées",
+    "type": "boolean"
+  },
+  {
+    "key": "RES_ETUDIANTS",
+    "title": "Résidence étudiante",
+    "description": "Présence d'une résidence étudiante",
+    "type": "boolean"
+  },
+  {
+    "key": "RES_TOURISME",
+    "title": "Résidence tourisme",
+    "description": "Présence d'une résidence tourisme",
+    "type": "boolean"
+  },
+  {
+    "key": "RES_HOTEL_SOCIALE",
+    "title": "Résidence hôtelière",
+    "description": "Présence d'une résidence hôtelière à vocation sociale",
+    "type": "boolean"
+  },
+  {
+    "key": "RES_SOCIALE",
+    "title": "Résidence sociale",
+    "description": "Présence d'une résidence sociale",
+    "type": "boolean"
+  },
+  {
+    "key": "RES_HANDICAPES",
+    "title": "Résidence handicapés",
+    "description": "Présence d'une résidence pour personnes handicapés",
+    "type": "boolean"
+  },
+  {
+    "key": "RES_AUTRE",
+    "title": "Résidence autre",
+    "description": "Présence d'un autre type de résidence",
+    "type": "boolean"
+  },
+  {
+    "key": "NB_LGT_TOT_CREES",
+    "title": "NB_LGT_TOT_CREES",
+    "description": "Nombre total de logements créés",
+    "type": "string"
+  },
+  {
+    "key": "NB_LGT_IND_CREES",
+    "title": "NB_LGT_IND_CREES",
+    "description": "Nombre de logements individuels créés",
+    "type": "string"
+  },
+  {
+    "key": "NB_LGT_COL_CREES",
+    "title": "NB_LGT_COL_CREES",
+    "description": "Nombre de logements collectifs créés",
+    "type": "string"
+  },
+  {
+    "key": "NB_LGT_INDIV_PURS",
+    "title": "NB_LGT_INDIV_PURS",
+    "description": "Nombre de logements individuels purs créés",
+    "type": "string"
+  },
+  {
+    "key": "NB_LGT_INDIV_GROUPES",
+    "title": "NB_LGT_INDIV_GROUPES",
+    "description": "Nombre de logements individuels groupés créés (hors résidence)",
+    "type": "string"
+  },
+  {
+    "key": "NB_LGT_RES",
+    "title": "NB_LGT_RES",
+    "description": "Nombre de logements en résidence créés",
+    "type": "string"
+  },
+  {
+    "key": "NB_LGT_COL_HORS_RES",
+    "title": "NB_LGT_COL_HORS_RES",
+    "description": "Nombre de logements collectifs créés hors résidence",
+    "type": "string"
+  },
+  {
+    "key": "NB_LGT_DEMOLIS",
+    "title": "NB_LGT_DEMOLIS",
+    "description": "Nombre de logements démolis",
+    "type": "string"
+  },
+  {
+    "key": "NB_LGT_1P",
+    "title": "NB_LGT_1P",
+    "description": "Nombre de logements de 1 pièce créés",
+    "type": "string"
+  },
+  {
+    "key": "NB_LGT_2P",
+    "title": "NB_LGT_2P",
+    "description": "Nombre de logements de 2 pièces créés",
+    "type": "string"
+  },
+  {
+    "key": "NB_LGT_3P",
+    "title": "NB_LGT_3P",
+    "description": "Nombre de logements de 3 pièces créés",
+    "type": "string"
+  },
+  {
+    "key": "NB_LGT_4P",
+    "title": "NB_LGT_4P",
+    "description": "Nombre de logements de 4 pièces créés",
+    "type": "string"
+  },
+  {
+    "key": "NB_LGT_5P",
+    "title": "NB_LGT_5P",
+    "description": "Nombre de logements de 5 pièces créés",
+    "type": "string"
+  },
+  {
+    "key": "NB_LGT_6P_PLUS",
+    "title": "NB_LGT_6P_PLUS",
+    "description": "Nombre de logements de 6 pièces ou plus créés",
+    "type": "string"
+  },
+  {
+    "key": "NB_LGT_PRET_LOC_SOCIAL",
+    "title": "NB_LGT_PRET_LOC_SOCIAL",
+    "description": "Nb de logements locatifs sociaux",
+    "type": "string"
+  },
+  {
+    "key": "NB_LGT_ACC_SOC_HORS_PTZ",
+    "title": "NB_LGT_ACC_SOC_HORS_PTZ",
+    "description": "Nb de logements aidé (hors ptz)",
+    "type": "string"
+  },
+  {
+    "key": "NB_LGT_PTZ",
+    "title": "NB_LGT_PTZ",
+    "description": "Nb de logements ptz",
+    "type": "string"
+  },
+  {
+    "key": "SURF_HAB_AVANT",
+    "title": "SURF_HAB_AVANT",
+    "description": "Surface de plancher de la destination ' Habitation ' existante avant travaux",
+    "type": "string"
+  },
+  {
+    "key": "SURF_HAB_CREEE",
+    "title": "SURF_HAB_CREEE",
+    "description": "Surface de plancher de la destination ' Habitation ' nouvelle construite",
+    "type": "string"
+  },
+  {
+    "key": "SURF_HAB_ISSUE_TRANSFO",
+    "title": "SURF_HAB_ISSUE_TRANSFO",
+    "description": "Surface de plancher de la destination ' Habitation ' créée par changement de destination",
+    "type": "string"
+  },
+  {
+    "key": "SURF_HAB_DEMOLIE",
+    "title": "_HAB_DEMOLIE",
+    "description": "Surface de plancher de la destination ' Habitation ' supprimée (démolie)",
+    "type": "string"
+  },
+  {
+    "key": "SURF_HAB_TRANSFORMEE",
+    "title": "SURF_HAB_TRANSFORMEE",
+    "description": "Surface de plancher de la destination ' Habitation ' supprimée par changement de destination",
+    "type": "string"
+  },
+  {
+    "key": "SURF_LOC_AVANT",
+    "title": "SURF_LOC_AVANT",
+    "description": "Surface de plancher de locaux non résidentiels (i.e. autres que d'habitation) existante avant travaux",
+    "type": "string"
+  },
+  {
+    "key": "SURF_LOC_CREEE",
+    "title": "SURF_LOC_CREEE",
+    "description": "Surface de plancher de locaux non résidentiels (i.e. autres que d'habitation) nouvelle construite",
+    "type": "string"
+  },
+  {
+    "key": "SURF_LOC_ISSUE_TRANSFO",
+    "title": "SURF_LOC_ISSUE_TRANSFO",
+    "description": "Surface de plancher de locaux non résidentiels (i.e. autres que d'habitation) créée par changement de destination",
+    "type": "string"
+  },
+  {
+    "key": "SURF_LOC_DEMOLIE",
+    "title": "SURF_LOC_DEMOLIE",
+    "description": "Surface de plancher de locaux non résidentiels (i.e. autres que d'habitation) démolie",
+    "type": "string"
+  },
+  {
+    "key": "SURF_LOC_TRANSFORMEE",
+    "title": "SURF_LOC_TRANSFORMEE",
+    "description": "Surface de plancher de locaux non résidentiels (i.e. autres que d'habitation) supprimée par changement de destination",
+    "type": "string"
+  },
+  {
+    "key": "SURF_HEB_TRANSFORMEE",
+    "title": "SURF_HEB_TRANSFORMEE",
+    "description": "Surface d'hébergement hôtelier transformée (changement de destination, réhabilitation, scission, regroupement...)",
+    "type": "string"
+  },
+  {
+    "key": "SURF_BUR_TRANSFORMEE",
+    "title": "SURF_BUR_TRANSFORMEE",
+    "description": "Surface de bureaux transformée (changement de destination, réhabilitation, scission, regroupement...)",
+    "type": "string"
+  },
+  {
+    "key": "SURF_COM_TRANSFORMEE",
+    "title": "SURF_COM_TRANSFORMEE",
+    "description": "Surface de commerce transformée (changement de destination, réhabilitation, scission, regroupement...)",
+    "type": "string"
+  },
+  {
+    "key": "SURF_ART_TRANSFORMEE",
+    "title": "SURF_ART_TRANSFORMEE",
+    "description": "Surface d'artisanat transformée (changement de destination, réhabilitation, scission, regroupement...)",
+    "type": "string"
+  },
+  {
+    "key": "SURF_IND_TRANSFORMEE",
+    "title": "SURF_IND_TRANSFORMEE",
+    "description": "Surface industrielle transformée (changement de destination, réhabilitation, scission, regroupement...)",
+    "type": "string"
+  },
+  {
+    "key": "SURF_AGR_TRANSFORMEE",
+    "title": "SURF_AGR_TRANSFORMEE",
+    "description": "Surface agricole transformée (changement de destination, réhabilitation, scission, regroupement...)",
+    "type": "string"
+  },
+  {
+    "key": "SURF_ENT_TRANSFORMEE",
+    "title": "SURF_ENT_TRANSFORMEE",
+    "description": "Surface d'entrepôt transformée (changement de destination, réhabilitation, scission, regroupement...)",
+    "type": "string"
+  },
+  {
+    "key": "SURF_PUB_TRANSFORMEE",
+    "title": "SURF_PUB_TRANSFORMEE",
+    "description": "Surface de service public ou d'intérêt collectif transformée (changement de destination, réhabilitation, scission, regroupement...)",
+    "type": "string"
+  },
+  {
+    "key": "latitude",
+    "title": "latitude",
+    "description": "Coordonné géographique qui permet de se situer par rapport à l'équateur",
+    "type": "number",
+    "x-refersTo": "http://schema.org/latitude"
+  },
+  {
+    "key": "longitude",
+    "title": "longitude",
+    "description": "Coordonnée géographique qui permet de se situer par rapport au méridien de Greenwich",
+    "type": "number",
+    "x-refersTo": "http://schema.org/longitude"
+  },
+  {
+    "key": "parcel_confidence",
+    "title": "parcel_confidence",
+    "description": "pourcentage de confiance concernant le code de la parcelle",
+    "type": "string"
+  },
+  {
+    "key": "parcelle",
+    "title": "Code de la parcelle",
+    "description": "Le code de la parcelle cadastrale est le numéro unique attribué par le Service du cadastre pour identifier une parcelle cadastrale au niveau national",
+    "type": "string",
+    "x-refersTo": "http://dbpedia.org/ontology/codeLandRegistry"
+  }
 ]

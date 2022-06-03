@@ -1,253 +1,250 @@
 [
-    {
-        "key": "REG",
-        "title": "Code de la région",
-        "description": "Code de la région du lieu des travaux",
-        "type": "string",
-        "x-refersTo": "http://rdf.insee.fr/def/geo#codeRegion"
+  {
+    "key": "REG",
+    "title": "Code de la région",
+    "description": "Code de la région du lieu des travaux",
+    "type": "string",
+    "x-refersTo": "http://rdf.insee.fr/def/geo#codeRegion"
+  },
+  {
+    "key": "DEP",
+    "title": "Code du département",
+    "description": "Code du département du lieu des travaux",
+    "type": "string",
+    "x-refersTo": "http://rdf.insee.fr/def/geo#codeDepartement"
+  },
+  {
+    "key": "COMM",
+    "title": "Code INSEE de la commune",
+    "description": "Code de la commune du lieu des travaux",
+    "type": "string",
+    "x-refersTo": "http://rdf.insee.fr/def/geo#codeCommune"
+  },
+  {
+    "key": "Num_PD",
+    "title": "Numéro du permis de démolir",
+    "description": "Numéro d'enregistrement du permis de démolir (PD)",
+    "type": "string"
+  },
+  {
+    "key": "Etat_PD",
+    "title": "Etat d'avancement du projet",
+    "description": "Etat d'avancement du projet",
+    "type": "string",
+    "ignoreDetection": true,
+    "x-labels": {
+      "2": "Autorisé",
+      "4": "Annulé",
+      "5": "Commencé",
+      "6": "Terminé"
     },
-    {
-        "key": "DEP",
-        "title": "Code du département",
-        "description": "Code du département du lieu des travaux",
-        "type": "string",
-        "x-refersTo": "http://rdf.insee.fr/def/geo#codeDepartement"
+    "enum": ["2", "6", "4", "5"]
+  },
+  {
+    "key": "DATE_REELLE_AUTORISATION",
+    "title": "Date réelle d'autorisation initiale",
+    "description": "Date réelle d'autorisation initiale",
+    "type": "date"
+  },
+  {
+    "key": "DATE_REELLE_DOC",
+    "title": "Date réelle d'ouverture de chantier",
+    "description": "Date réelle d'ouverture de chantier",
+    "type": "date"
+  },
+  {
+    "key": "DATE_REELLE_DAACT",
+    "title": "Date réelle d'achèvement des travaux",
+    "description": "Date réelle d'achèvement des travaux",
+    "type": "date"
+  },
+  {"key": "AN_DEPOT", "title": "Année de dépôt de la DAU", "type": "integer"},
+  {
+    "key": "DPC_PREM",
+    "title": "Date premier évènement",
+    "description": "Date (mois) de prise en compte du premier évènement reçu dans Sitadel (AAAAMM)",
+    "type": "integer"
+  },
+  {
+    "key": "DPC_AUT",
+    "title": "DPC_AUT",
+    "description": "Date (mois) de prise en compte (DPC) de l'autorisation initiale",
+    "type": "integer"
+  },
+  {
+    "key": "DPC_DERN",
+    "title": "DPC_DERN",
+    "description": "Date (mois) (DPC) de dernière mise à jour des données",
+    "type": "integer"
+  },
+  {
+    "key": "APE_DEM",
+    "title": "APE_DEM",
+    "description": "Code d'activité principale de l'établissement d'un demandeur avéré en tant que personne morale",
+    "type": "string"
+  },
+  {
+    "key": "CJ_DEM",
+    "title": "CJ_DEM",
+    "description": "Catégorie juridique d'un demandeur avéré en tant que personne morale",
+    "type": "integer"
+  },
+  {
+    "key": "DENOM_DEM",
+    "title": "Dénomination du demandeur ",
+    "description": "Dénomination d'un demandeur avéré en tant que personne morale",
+    "type": "string"
+  },
+  {
+    "key": "SIREN_DEM",
+    "title": "Numéro SIREN d'un demandeur",
+    "description": "Numéro SIREN d'un demandeur avéré en tant que personne morale",
+    "type": "string",
+    "x-refersTo": "http://dbpedia.org/ontology/siren"
+  },
+  {
+    "key": "SIRET_DEM",
+    "title": "Numéro SIRET d'un demandeur",
+    "description": "Numéro SIRET d'un demandeur avéré en tant que personne morale",
+    "type": "string",
+    "x-refersTo": "http://www.datatourisme.fr/ontology/core/1.0/#siret"
+  },
+  {
+    "key": "CODPOST_DEM",
+    "title": "CODPOST_DEM",
+    "description": "Code postal du demandeur",
+    "type": "string"
+  },
+  {
+    "key": "LOCALITE_DEM",
+    "title": "LOCALITE_DEM",
+    "description": "Localité du demandeur",
+    "type": "string"
+  },
+  {
+    "key": "REC_ARCHI",
+    "title": "REC_ARCHI",
+    "description": "Indicateur de recours à un architecte",
+    "type": "boolean"
+  },
+  {
+    "key": "ADR_NUM_TER",
+    "title": "ADR_NUM_TER",
+    "description": "Numéro de voie du terrain",
+    "type": "string"
+  },
+  {
+    "key": "ADR_TYPEVOIE_TER",
+    "title": "ADR_TYPEVOIE_TER",
+    "description": "Type de voie du terrain",
+    "type": "string"
+  },
+  {
+    "key": "ADR_LIBVOIE_TER",
+    "title": "ADR_LIBVOIE_TER",
+    "description": "Libellé de la voie du terrain",
+    "type": "string"
+  },
+  {
+    "key": "ADR_LIEUDIT_TER",
+    "title": "ADR_LIEUDIT_TER",
+    "description": "Lieu-dit du terrain",
+    "type": "string"
+  },
+  {
+    "key": "ADR_LOCALITE_TER",
+    "title": "ADR_LOCALITE_TER",
+    "description": "Localité du terrain",
+    "type": "string"
+  },
+  {
+    "key": "ADR_CODPOST_TER",
+    "title": "ADR_CODPOST_TER",
+    "description": "Code postal du terrain",
+    "type": "string",
+    "x-refersTo": "http://schema.org/postalCode"
+  },
+  {
+    "key": "sec_cadastre1",
+    "title": "sec_cadastre1",
+    "description": "Section cadastrale 1",
+    "type": "string"
+  },
+  {
+    "key": "num_cadastre1",
+    "title": "num_cadastre1",
+    "description": "Numéro parcelle cadastrale 1",
+    "type": "string"
+  },
+  {
+    "key": "sec_cadastre2",
+    "title": "sec_cadastre2",
+    "description": "Section cadastrale 2",
+    "type": "string"
+  },
+  {
+    "key": "num_cadastre2",
+    "title": "num_cadastre2",
+    "description": "Numéro parcelle cadastrale 2",
+    "type": "string"
+  },
+  {
+    "key": "sec_cadastre3",
+    "title": "sec_cadastre3",
+    "description": "Section cadastrale 3",
+    "type": "string"
+  },
+  {
+    "key": "num_cadastre3",
+    "title": "num_cadastre3",
+    "description": "Numéro parcelle cadastrale 3",
+    "type": "string"
+  },
+  {
+    "key": "SUPERFICIE_TERRAIN",
+    "title": "SUPERFICIE_TERRAIN",
+    "description": "Superficie du terrain",
+    "type": "integer"
+  },
+  {
+    "key": "ZONE_OP",
+    "title": "Zone opératoire",
+    "description": "Code zone opératoire",
+    "type": "string",
+    "ignoreDetection": true,
+    "x-labels": {
+      "1": "Lotissement",
+      "2": "Zone d'aménagement concerté",
+      "3": "Association foncière urbaine",
+      "4": "Hors zone ou inconnu"
     },
-    {
-        "key": "COMM",
-        "title": "Code INSEE de la commune",
-        "description": "Code de la commune du lieu des travaux",
-        "type": "string",
-        "x-refersTo": "http://rdf.insee.fr/def/geo#codeCommune"
-    },
-    {
-        "key": "Num_PD",
-        "title": "Numéro du permis de démolir",
-        "description": "Numéro d'enregistrement du permis de démolir (PD)",
-        "type": "string"
-    },
-    {
-        "key": "Etat_PD",
-        "title": "Etat d'avancement du projet",
-        "description": "Etat d'avancement du projet",
-        "type": "string",
-        "ignoreDetection": true,
-        "x-labels": {
-            "2": "Autorisé",
-            "4": "Annulé",
-            "5": "Commencé",
-            "6": "Terminé"
-        },
-        "enum": [
-            "2",
-            "6",
-            "4",
-            "5"
-        ]
-    },
-    {
-        "key": "DATE_REELLE_AUTORISATION",
-        "title": "Date réelle d'autorisation initiale",
-        "description": "Date réelle d'autorisation initiale",
-        "type": "date"
-    },
-    {
-        "key": "DATE_REELLE_DOC",
-        "title": "Date réelle d'ouverture de chantier",
-        "description": "Date réelle d'ouverture de chantier",
-        "type": "date"
-    },
-    {
-        "key": "DATE_REELLE_DAACT",
-        "title": "Date réelle d'achèvement des travaux",
-        "description": "Date réelle d'achèvement des travaux",
-        "type": "date"
-    },
-    {
-        "key": "DPC_AUT",
-        "title": "DPC_AUT",
-        "description": "Date (mois) de prise en compte (DPC) de l'autorisation initiale",
-        "type": "integer"
-    },
-    {
-        "key": "DPC_DERN",
-        "title": "DPC_DERN",
-        "description": "Date (mois) (DPC) de dernière mise à jour des données",
-        "type": "integer"
-    },
-    {
-        "key": "APE_DEM",
-        "title": "APE_DEM",
-        "description": "Code d'activité principale de l'établissement d'un demandeur avéré en tant que personne morale",
-        "type": "string"
-    },
-    {
-        "key": "CJ_DEM",
-        "title": "CJ_DEM",
-        "description": "Catégorie juridique d'un demandeur avéré en tant que personne morale",
-        "type": "integer"
-    },
-    {
-        "key": "DENOM_DEM",
-        "title": "Dénomination du demandeur ",
-        "description": "Dénomination d'un demandeur avéré en tant que personne morale",
-        "type": "string"
-    },
-    {
-        "key": "SIREN_DEM",
-        "title": "Numéro SIREN d'un demandeur",
-        "description": "Numéro SIREN d'un demandeur avéré en tant que personne morale",
-        "type": "string",
-        "x-refersTo": "http://dbpedia.org/ontology/siren"
-    },
-    {
-        "key": "SIRET_DEM",
-        "title": "Numéro SIRET d'un demandeur",
-        "description": "Numéro SIRET d'un demandeur avéré en tant que personne morale",
-        "type": "string",
-        "x-refersTo": "http://www.datatourisme.fr/ontology/core/1.0/#siret"
-    },
-    {
-        "key": "CODPOST_DEM",
-        "title": "CODPOST_DEM",
-        "description": "Code postal du demandeur",
-        "type": "string"
-    },
-    {
-        "key": "LOCALITE_DEM",
-        "title": "LOCALITE_DEM",
-        "description": "Localité du demandeur",
-        "type": "string"
-    },
-    {
-        "key": "REC_ARCHI",
-        "title": "REC_ARCHI",
-        "description": "Indicateur de recours à un architecte",
-        "type": "boolean"
-    },
-    {
-        "key": "ADR_NUM_TER",
-        "title": "ADR_NUM_TER",
-        "description": "Numéro de voie du terrain",
-        "type": "string"
-    },
-    {
-        "key": "ADR_TYPEVOIE_TER",
-        "title": "ADR_TYPEVOIE_TER",
-        "description": "Type de voie du terrain",
-        "type": "string"
-    },
-    {
-        "key": "ADR_LIBVOIE_TER",
-        "title": "ADR_LIBVOIE_TER",
-        "description": "Libellé de la voie du terrain",
-        "type": "string"
-    },
-    {
-        "key": "ADR_LIEUDIT_TER",
-        "title": "ADR_LIEUDIT_TER",
-        "description": "Lieu-dit du terrain",
-        "type": "string"
-    },
-    {
-        "key": "ADR_LOCALITE_TER",
-        "title": "ADR_LOCALITE_TER",
-        "description": "Localité du terrain",
-        "type": "string"
-    },
-    {
-        "key": "ADR_CODPOST_TER",
-        "title": "ADR_CODPOST_TER",
-        "description": "Code postal du terrain",
-        "type": "string",
-        "x-refersTo": "http://schema.org/postalCode"
-    },
-    {
-        "key": "sec_cadastre1",
-        "title": "sec_cadastre1",
-        "description": "Section cadastrale 1",
-        "type": "string"
-    },
-    {
-        "key": "num_cadastre1",
-        "title": "num_cadastre1",
-        "description": "Numéro parcelle cadastrale 1",
-        "type": "string"
-    },
-    {
-        "key": "sec_cadastre2",
-        "title": "sec_cadastre2",
-        "description": "Section cadastrale 2",
-        "type": "string"
-    },
-    {
-        "key": "num_cadastre2",
-        "title": "num_cadastre2",
-        "description": "Numéro parcelle cadastrale 2",
-        "type": "string"
-    },
-    {
-        "key": "sec_cadastre3",
-        "title": "sec_cadastre3",
-        "description": "Section cadastrale 3",
-        "type": "string"
-    },
-    {
-        "key": "num_cadastre3",
-        "title": "num_cadastre3",
-        "description": "Numéro parcelle cadastrale 3",
-        "type": "string"
-    },
-    {
-        "key": "SUPERFICIE_TERRAIN",
-        "title": "SUPERFICIE_TERRAIN",
-        "description": "Superficie du terrain",
-        "type": "integer"
-    },
-    {
-        "key": "ZONE_OP",
-        "title": "Zone opératoire",
-        "description": "Code zone opératoire",
-        "type": "string",
-        "ignoreDetection": true,
-        "x-labels": {
-            "1": "Lotissement",
-            "2": "Zone d'aménagement concerté",
-            "3": "Association foncière urbaine",
-            "4": "Hors zone ou inconnu"
-        },
-        "enum": [
-            "1",
-            "2",
-            "3",
-            "4"
-        ]
-    },
-    {
-        "key": "latitude",
-        "title": "latitude",
-        "description": "Coordonné géographique qui permet de se situer par rapport à l'équateur",
-        "type": "number",
-        "x-refersTo": "http://schema.org/latitude"
-    },
-    {
-        "key": "longitude",
-        "title": "longitude",
-        "description": "Coordonnée géographique qui permet de se situer par rapport au méridien de Greenwich",
-        "type": "number",
-        "x-refersTo": "http://schema.org/longitude"
-    },
-    {
-        "key": "parcel_confidence",
-        "title": "parcel_confidence",
-        "description": "pourcentage de confiance concernant le code de la parcelle",
-        "type": "string"
-    },
-    {
-        "key": "parcelle",
-        "title": "Code de la parcelle",
-        "description": "Le code de la parcelle cadastrale est le numéro unique attribué par le Service du cadastre pour identifier une parcelle cadastrale au niveau national",
-        "type": "string",
-        "x-refersTo": "http://dbpedia.org/ontology/codeLandRegistry"
-    }
+    "enum": ["1", "2", "3", "4"]
+  },
+  {
+    "key": "latitude",
+    "title": "latitude",
+    "description": "Coordonné géographique qui permet de se situer par rapport à l'équateur",
+    "type": "number",
+    "x-refersTo": "http://schema.org/latitude"
+  },
+  {
+    "key": "longitude",
+    "title": "longitude",
+    "description": "Coordonnée géographique qui permet de se situer par rapport au méridien de Greenwich",
+    "type": "number",
+    "x-refersTo": "http://schema.org/longitude"
+  },
+  {
+    "key": "parcel_confidence",
+    "title": "parcel_confidence",
+    "description": "pourcentage de confiance concernant le code de la parcelle",
+    "type": "string"
+  },
+  {
+    "key": "parcelle",
+    "title": "Code de la parcelle",
+    "description": "Le code de la parcelle cadastrale est le numéro unique attribué par le Service du cadastre pour identifier une parcelle cadastrale au niveau national",
+    "type": "string",
+    "x-refersTo": "http://dbpedia.org/ontology/codeLandRegistry"
+  }
 ]
