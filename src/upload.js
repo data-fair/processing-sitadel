@@ -18,6 +18,10 @@ module.exports = async (processingConfig, tmpDir, axios, log, patchConfig) => {
 
   if (processingConfig.datasetMode === 'update') {
     await log.step('Mise à jour du jeu de données')
+    if (processingConfig.forceUpdate) {
+      await log.info('Mise à jour du schéma')
+      formData.append('schema', JSON.stringify(datasetSchema))
+    }
   } else {
     formData.append('schema', JSON.stringify(datasetSchema))
     formData.append('title', processingConfig.dataset.title)

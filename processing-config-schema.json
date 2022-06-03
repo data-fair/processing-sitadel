@@ -33,6 +33,12 @@
             "id": { "type": "string", "title": "Identifiant" },
             "title": { "type": "string", "title": "Titre" }
           }
+        },
+        "forceUpdate": {
+          "title": "Forcer la mise à jour",
+          "description": "La mise à jour forcée permet de remettre à jour le schéma en cas de modification sur le jeu de donnée",
+          "type": "boolean",
+          "default": false
         }
       }
     }]

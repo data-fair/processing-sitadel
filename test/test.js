@@ -37,13 +37,14 @@ describe('Station service processing', () => {
 
     const processingConfig = {
       clearFiles: false,
-      datasetMode: 'create',
+      datasetMode: 'update',
       dataset: {
         title: 'Sitadel - test',
         id: 'sitadel-test-id'
       },
       departements: ['56'],
-      processFile: 'amenager',
+      processFile: 'demolir',
+      forceUpdate: false,
       urlParcelData: {
         href: config.parcelsUrl
       },

@@ -440,9 +440,9 @@ module.exports = async (pluginConfig, processingConfig, tmpDir, axios, log) => {
     }
 
     let files = await fs.readdir(tmpDir)
-    await log.info(`Contenu répertoire de travail ${tmpDir} avant fusion : ${files}`)
+    // await log.info(`Contenu répertoire de travail ${tmpDir} avant fusion : ${files}`)
     files = files.filter(file => file.endsWith('.csv') && file.includes(processingConfig.processFile) && !file.startsWith('sitadel'))
-    await log.info(`Contenu filtré : ${files}`)
+    // await log.info(`Contenu filtré : ${files}`)
     const file1 = files[0] && path.join(tmpDir, files[0])
     const file2 = files[1] && path.join(tmpDir, files[1])
     await log.step('Traitement des fichiers')
