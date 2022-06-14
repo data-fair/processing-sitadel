@@ -23,6 +23,25 @@ function measure (lat1, lon1, lat2, lon2) { // generally used geo measurement fu
   return d * 1000 // meters
 }
 
+function sleep (ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms)
+  })
+}
+
+async function retryGeocode (maxRetries, arr, axios, log) {
+  return await geocode(arr, axios, log).catch(async function (err) {
+    if (maxRetries <= 0) {
+      await log.info(`Impossible de joindre api-adresse.data.gouv : ${err.status}, ${err.statusText}`)
+      throw err
+    }
+    const ms = 60000 / maxRetries
+    await log.info(`Erreur ${err.status} sur api-adresse.data.gouv : ${err.statusText}. Prochaine tentative dans ${ms.toFixed(0)} ms`)
+    await sleep(ms)
+    return await retryGeocode(maxRetries - 1, arr, axios, log)
+  })
+}
+
 async function geocode (arr, axios, log) {
   await log.info(`Géocodage de ${arr.length} éléments`, '')
   const start = new Date().getTime()
@@ -40,47 +59,41 @@ async function geocode (arr, axios, log) {
   form.append('result_columns', 'latitude')
   form.append('result_columns', 'longitude')
 
-  try {
-    const response = await axios.post(
-      'https://api-adresse.data.gouv.fr/search/csv/',
-      form,
-      {
-        headers: {
-          ...form.getHeaders()
-        }
+  const response = await axios.post(
+    'https://api-adresse.data.gouv.fr/search/csv/',
+    form,
+    {
+      headers: {
+        ...form.getHeaders()
       }
-    )
-
-    const duration = new Date().getTime() - start
-    await log.info(`Géocodage réalisé en ${duration.toLocaleString('fr')} ms.`, '')
-
-    let ret = response.data
-
-    // in case of error during the geocoding, data.gouv seems to return the same file.
-    // this part create a new response with a good format
-    const headerRes = response.data.split('\n')[0]
-    if (!(headerRes.includes('result_type') && headerRes.includes('latitude') && headerRes.includes('longitude'))) {
-      await log.info('La réponse du géocodage ne possède pas les résultats')
-      let newResponse
-      for (const line of response.data.split('\n')) {
-        if (line === headerRes) newResponse += line + ',result_type,latitude,longitude'
-        else if (line !== '') newResponse += line + ',,,'
-        if (line !== '') newResponse += '\n'
-      }
-      ret = newResponse
     }
+  )
 
-    if (!header) {
-      header = true
-      return ret
+  const duration = new Date().getTime() - start
+  await log.info(`Géocodage réalisé en ${duration.toLocaleString('fr')} ms.`, '')
+
+  let ret = response.data
+
+  // in case of error during the geocoding, data.gouv seems to return the same file.
+  // this part create a new response with a good format
+  const headerRes = response.data.split('\n')[0]
+  if (!(headerRes.includes('result_type') && headerRes.includes('latitude') && headerRes.includes('longitude'))) {
+    await log.info('La réponse du géocodage ne possède pas les résultats')
+    let newResponse
+    for (const line of response.data.split('\n')) {
+      if (line === headerRes) newResponse += line + ',result_type,latitude,longitude'
+      else if (line !== '') newResponse += line + ',,,'
+      if (line !== '') newResponse += '\n'
     }
-    // remove the header
-    return ret.substring(ret.indexOf('\n') + 1)
-  } catch (err) {
-    await log.info(`Erreur ${err.status} sur api-adresse.data.gouv : ${err.statusText}`)
-    console.log(err)
-    throw err
+    ret = newResponse
   }
+
+  if (!header) {
+    header = true
+    return ret
+  }
+  // remove the header
+  return ret.substring(ret.indexOf('\n') + 1)
 }
 
 async function getParcel (array, globalStats, keysParcelData, pluginConfig, processingConfig, axios, log) {
@@ -138,8 +151,7 @@ async function getParcel (array, globalStats, keysParcelData, pluginConfig, proc
         commParcels.push(...parcels.results)
       }
     } catch (err) {
-      console.log(err.error)
-      console.log(err)
+      await log.info(`Une erreur est survenue sur la commune ${array[0].COMM} : ${err.status}, ${err.statusText}`)
       await log.info('Paramètres de requête ' + JSON.stringify(params))
       throw err
     }
@@ -174,8 +186,7 @@ async function getParcel (array, globalStats, keysParcelData, pluginConfig, proc
         commParcels.push(...parcels.results)
       }
     } catch (err) {
-      console.log(err.error)
-      console.log(err)
+      await log.info(`Une erreur est survenue sur la commune ${array[0].COMM} : ${err.status}, ${err.statusText}`)
       await log.info('Paramètres de requête ' + JSON.stringify(params))
       throw err
     }
@@ -355,64 +366,69 @@ function compare (a, b) {
   return (b).localeCompare(a)
 }
 
+let fusionDone = false
+
 async function fusion (a, b, option, log) {
-  let cpt = 0
-  if (b === undefined) {
-    await log.info(`Pas de fusion nécessaire, utilisation de ${a}. Option : ${option}`)
-    let out = fs.createReadStream(a, { objectMode: true }).pipe(csv.parse({ columns: true, delimiter: ';' }))
-    out = out.pipe(filter(function (data) {
-      if (option.includes(data.DEP)) cpt++
-      return option.length ? option.includes(data.DEP) : true
-    }, { objectMode: true }))
-    out.on('finish', async () => {
-      if (cpt === 0) {
-        await log.info(`Aucun résultat avec le filtre ${option}`)
-        throw new Error('Rien à traiter')
-      }
+  if (!fusionDone) {
+    fusionDone = true
+    let cpt = 0
+    if (option.length > 0) await log.info(`Option(s) de fusion : ${option}`)
+    if (b === undefined) {
+      await log.info(`Pas de fusion nécessaire, utilisation de ${a}.`)
+      let out = fs.createReadStream(a, { objectMode: true }).pipe(csv.parse({ columns: true, delimiter: ';' }))
+      out = out.pipe(filter(function (data) {
+        if (option.includes(data.DEP)) cpt++
+        return option.length ? option.includes(data.DEP) : true
+      }, { objectMode: true }))
+      out.on('finish', async () => {
+        if (cpt === 0 && option.length > 0) {
+          await log.info(`Aucun résultat avec le filtre ${option}`)
+          throw new Error('Rien à traiter')
+        }
+      })
+      return out
+    }
+
+    await log.info(`Fusion de ${a} et ${b}.`)
+
+    const h1 = new Promise(function (resolve) {
+      fs.createReadStream(a, { objectMode: true }).on('data', function (data) { resolve(data.toString().split('\n')[0]) })
     })
-    return out
-  }
-
-  await log.info(`Fusion de ${a} et ${b}. Option : ${option}`)
-
-  const h1 = new Promise(function (resolve) {
-    fs.createReadStream(a, { objectMode: true }).on('data', function (data) { resolve(data.toString().split('\n')[0]) })
-  })
-  const h2 = new Promise(function (resolve) {
-    fs.createReadStream(b, { objectMode: true }).on('data', function (data) { resolve(data.toString().split('\n')[0]) })
-  })
-
-  if (await h1 !== await h2) {
-    await log.error('Erreur : Les deux CSVs ne possèdent pas la même en-tête')
-    throw new Error('Erreur : Les deux CSVs ne possèdent pas la même en-tête')
-  } else {
-    await log.info('Fichiers compatibles')
-  }
-
-  let f1 = fs.createReadStream(a, { objectMode: true }).pipe(csv.parse({ columns: true, delimiter: ';' }))
-  let f2 = fs.createReadStream(b, { objectMode: true }).pipe(csv.parse({ columns: true, delimiter: ';' }))
-
-  if (option.length > 0) {
-    f1 = f1.pipe(filter(function (data) {
-      if (option.includes(data.DEP)) cpt++
-      return option.length ? option.includes(data.DEP) : true
-    }, { objectMode: true }))
-    f2 = f2.pipe(filter(function (data) {
-      if (option.includes(data.DEP)) cpt++
-      return option.length ? option.includes(data.DEP) : true
-    }, { objectMode: true }))
-  }
-
-  f1.on('finish', () => {
-    f2.on('finish', async () => {
-      if (cpt === 0) {
-        await log.info(`Aucun résultat avec le filtre ${option}`)
-        throw new Error('Rien à traiter')
-      }
+    const h2 = new Promise(function (resolve) {
+      fs.createReadStream(b, { objectMode: true }).on('data', function (data) { resolve(data.toString().split('\n')[0]) })
     })
-  })
 
-  return mergeSortStream(f1, f2, compare)
+    if (await h1 !== await h2) {
+      await log.error('Erreur : Les deux CSVs ne possèdent pas la même en-tête')
+      throw new Error('Erreur : Les deux CSVs ne possèdent pas la même en-tête')
+    } else {
+      await log.info('Fichiers compatibles')
+    }
+
+    let f1 = fs.createReadStream(a, { objectMode: true }).pipe(csv.parse({ columns: true, delimiter: ';' }))
+    let f2 = fs.createReadStream(b, { objectMode: true }).pipe(csv.parse({ columns: true, delimiter: ';' }))
+
+    if (option.length > 0) {
+      f1 = f1.pipe(filter(function (data) {
+        if (option.includes(data.DEP)) cpt++
+        return option.length ? option.includes(data.DEP) : true
+      }, { objectMode: true }))
+      f2 = f2.pipe(filter(function (data) {
+        if (option.includes(data.DEP)) cpt++
+        return option.length ? option.includes(data.DEP) : true
+      }, { objectMode: true }))
+    }
+
+    f1.on('finish', () => {
+      f2.on('finish', async () => {
+        if (cpt === 0 && option.length > 0) {
+          await log.info(`Aucun résultat avec le filtre ${option}`)
+          throw new Error('Rien à traiter')
+        }
+      })
+    })
+    return mergeSortStream(f1, f2, compare)
+  }
 }
 
 module.exports = async (pluginConfig, processingConfig, tmpDir, axios, log) => {
@@ -427,11 +443,10 @@ module.exports = async (pluginConfig, processingConfig, tmpDir, axios, log) => {
     stoHeader: undefined
   }
   let currComm
-  const batchComm = []
-
-  const tab = []
-
+  let batchComm = []
+  let tab = []
   const keysParcelData = {}
+
   try {
     const schemaUrlParcelData = (await axios.get(processingConfig.urlParcelData.href + '/schema')).data
     for (const i of schemaUrlParcelData) {
@@ -458,15 +473,15 @@ module.exports = async (pluginConfig, processingConfig, tmpDir, axios, log) => {
           obj.ADR_LOCALITE_TER = obj.ADR_LOCALITE_TER.replaceAll('\'', '\\\'')
           tab.push(obj)
           if (tab.length >= 10000) {
-            const result = await geocode(tab, axios, log)
-            tab.length = 0
+            const result = await retryGeocode(5, tab, axios, log)
+            tab = []
             return next(null, result)
           }
           return next()
         },
         flush: async (callback) => {
           if (tab.length > 0) {
-            const result = await geocode(tab, axios, log)
+            const result = await retryGeocode(5, tab, axios, log)
             callback(null, result)
           }
         }
@@ -481,7 +496,7 @@ module.exports = async (pluginConfig, processingConfig, tmpDir, axios, log) => {
           } else if (batchComm.length > 0) {
             const result = await getParcel(batchComm, stats, keysParcelData, pluginConfig, processingConfig, axios, log)
             currComm = obj.COMM
-            batchComm.length = 0
+            batchComm = []
             batchComm.push(obj)
             return next(null, result)
           }
