@@ -29,7 +29,7 @@ module.exports = async (processingConfig, dir = 'data', axios, log) => {
       const filePath = `${dir}/${path.parse(url.pathname).base}`
       await log.info(`téléchargement du fichier ${file.title}, écriture dans ${filePath}`)
       await withStreamableFile(filePath, async (writeStream) => {
-        const res = await axios({ url: url.href, method: 'GET', responseType: 'stream' })
+        const res = await axios({ url: url.href, method: 'GET', responseType: 'stream', maxRedirects: 2 })
         await pump(res.data, writeStream)
       })
 

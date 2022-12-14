@@ -22,7 +22,8 @@ describe('Station service processing', () => {
       baseURL: config.dataFairUrl,
       headers: headers,
       maxContentLength: Infinity,
-      maxBodyLength: Infinity
+      maxBodyLength: Infinity,
+      maxRedirects: 0
     })
 
     // customize axios errors for shorter stack traces when a request fails
@@ -43,7 +44,7 @@ describe('Station service processing', () => {
         id: 'sitadel-test-id'
       },
       departements: ['56'],
-      processFile: 'amenager',
+      processFile: 'demolir',
       forceUpdate: true,
       urlParcelData: {
         href: config.parcelsUrl
