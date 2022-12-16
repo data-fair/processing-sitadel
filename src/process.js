@@ -8,6 +8,7 @@ const FormData = require('form-data')
 const mergeSortStream = require('merge-sort-stream')
 const filter = require('stream-filter')
 const path = require('path')
+const klaw = require('klaw-sync')
 
 let header = false
 
@@ -454,15 +455,16 @@ module.exports = async (pluginConfig, processingConfig, tmpDir, axios, log) => {
       if (i['x-refersTo'] === 'http://dbpedia.org/ontology/codeLandRegistry') keysParcelData.code = i.key
     }
 
-    let files = await fs.readdir(tmpDir)
+    // let files = await fs.readdir(tmpDir)
+    let files = klaw(tmpDir).sort((f1, f2) => f2.stats.size - f1.stats.size)
+    files = files.map(f => f.path)
+
     // await log.info(`Contenu répertoire de travail ${tmpDir} avant fusion : ${files}`)
-    files = files.filter(file => file.endsWith('.csv') && file.includes(processingConfig.processFile) && !file.startsWith('sitadel'))
+    files = files.filter(file => file.endsWith('.csv') && file.includes(processingConfig.processFile))
     // await log.info(`Contenu filtré : ${files}`)
-    const file1 = files[0] && path.join(tmpDir, files[0])
-    const file2 = files[1] && path.join(tmpDir, files[1])
     await log.step('Traitement des fichiers')
     await pump(
-      await fusion(file1, file2, processingConfig.departements, log),
+      await fusion(files[0], files[1], processingConfig.departements, log),
       new stream.Transform({
         objectMode: true,
         transform: async (obj, _, next) => {
