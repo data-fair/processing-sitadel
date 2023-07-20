@@ -97,15 +97,18 @@ async function geocode (arr, axios, log) {
   return ret.substring(ret.indexOf('\n') + 1)
 }
 
-async function getParcel (array, globalStats, keysParcelData, pluginConfig, processingConfig, axios, log) {
+function getCommCode (item, processingConfig) {
   const inseeCodeProp = {
     logements: 'Num_DAU',
     locaux: 'Num_DAU',
     amenager: 'Num_PA',
     demolir: 'Num_PD'
   }[processingConfig.processFile]
+  return item[inseeCodeProp].charAt(0) === '0' ? item[inseeCodeProp].slice(1, 6) : item.COMM
+}
 
-  const commCode = array[0][inseeCodeProp].charAt(0) === '0' ? array[0][inseeCodeProp].slice(1, 6) : array[0].COMM
+async function getParcel (array, globalStats, keysParcelData, pluginConfig, processingConfig, axios, log) {
+  const commCode = getCommCode(array[0], processingConfig)
 
   let stringRequest = ''
   let arrayUniNum = [...new Set(array.map(elem => elem.num_cadastre1.replace(/\D/g, '').padStart(4, '0').slice(-4)))]
@@ -151,7 +154,6 @@ async function getParcel (array, globalStats, keysParcelData, pluginConfig, proc
     tmpString = tmpString.substring(0, lastValue)
     if (tmpString.startsWith(commCode)) tmpString = tmpString.substring(tmpString.indexOf('(') + 1, lastValue)
     params.qs = `code:(/${commCode}.{5}(${tmpString})/)`
-
     // process the requests and add the result to the data array
     try {
       let parcels = (await axios.get(processingConfig.urlParcelData.href + '/lines', { params })).data
@@ -359,7 +361,6 @@ async function getParcel (array, globalStats, keysParcelData, pluginConfig, proc
   globalStats.premier += stats.premier
   globalStats.erreur += stats.erreur
 
-  // console.log(ret)
   if (!globalStats.header) {
     globalStats.header = true
     globalStats.stoHeader = Object.keys(ret[0])
@@ -501,12 +502,12 @@ module.exports = async (pluginConfig, processingConfig, tmpDir, axios, log) => {
       new stream.Transform({
         objectMode: true,
         transform: async (obj, _, next) => {
-          if (obj.COMM === currComm || currComm === undefined) {
+          if (getCommCode(obj, processingConfig) === currComm || currComm === undefined) {
             batchComm.push(obj)
-            currComm = obj.COMM
+            currComm = getCommCode(obj, processingConfig)
           } else if (batchComm.length > 0) {
             const result = await getParcel(batchComm, stats, keysParcelData, pluginConfig, processingConfig, axios, log)
-            currComm = obj.COMM
+            currComm = getCommCode(obj, processingConfig)
             batchComm = []
             batchComm.push(obj)
             return next(null, result)
