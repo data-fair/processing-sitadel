@@ -98,15 +98,24 @@ async function geocode (arr, axios, log) {
 }
 
 async function getParcel (array, globalStats, keysParcelData, pluginConfig, processingConfig, axios, log) {
+  const inseeCodeProp = {
+    logements: 'Num_DAU',
+    locaux: 'Num_DAU',
+    amenager: 'Num_PA',
+    demolir: 'Num_PD'
+  }[processingConfig.processFile]
+
+  const commCode = array[0][inseeCodeProp].charAt(0) === '0' ? array[0][inseeCodeProp].slice(1, 6) : array[0].COMM
+
   let stringRequest = ''
   let arrayUniNum = [...new Set(array.map(elem => elem.num_cadastre1.replace(/\D/g, '').padStart(4, '0').slice(-4)))]
 
   const ecart = 185
   do {
-    stringRequest += `/${array[0].COMM}.{5}(${arrayUniNum.slice(0, ecart).join('|')})/`
+    stringRequest += `/${commCode}.{5}(${arrayUniNum.slice(0, ecart).join('|')})/`
     arrayUniNum = arrayUniNum.slice(ecart, arrayUniNum.length + 1)
   } while (arrayUniNum.length > ecart)
-  if (arrayUniNum.length > 0) stringRequest += `/${array[0].COMM}.{5}(${arrayUniNum.slice(0, ecart).join('|')})/`
+  if (arrayUniNum.length > 0) stringRequest += `/${commCode}.{5}(${arrayUniNum.slice(0, ecart).join('|')})/`
 
   const params = {
     size: 10000
@@ -140,8 +149,8 @@ async function getParcel (array, globalStats, keysParcelData, pluginConfig, proc
     const lastValue = tmpString.lastIndexOf('|') > tmpString.lastIndexOf(')') ? tmpString.lastIndexOf('|') : tmpString.lastIndexOf(')')
 
     tmpString = tmpString.substring(0, lastValue)
-    if (tmpString.startsWith(array[0].COMM)) tmpString = tmpString.substring(tmpString.indexOf('(') + 1, lastValue)
-    params.qs = `code:(/${array[0].COMM}.{5}(${tmpString})/)`
+    if (tmpString.startsWith(commCode)) tmpString = tmpString.substring(tmpString.indexOf('(') + 1, lastValue)
+    params.qs = `code:(/${commCode}.{5}(${tmpString})/)`
 
     // process the requests and add the result to the data array
     try {
@@ -177,8 +186,8 @@ async function getParcel (array, globalStats, keysParcelData, pluginConfig, proc
     const lastValue = tmpString.lastIndexOf('|') > tmpString.lastIndexOf(')') ? tmpString.lastIndexOf('|') : tmpString.lastIndexOf(')')
 
     tmpString = tmpString.substring(0, lastValue)
-    if (tmpString.startsWith(array[0].COMM)) tmpString = tmpString.substring(tmpString.indexOf('(') + 1, lastValue)
-    params.qs = `code:(/${array[0].COMM}.{5}(${tmpString})/)`
+    if (tmpString.startsWith(commCode)) tmpString = tmpString.substring(tmpString.indexOf('(') + 1, lastValue)
+    params.qs = `code:(/${commCode}.{5}(${tmpString})/)`
     try {
       let parcels = (await axios.get(processingConfig.urlParcelData.href + '/lines', { params })).data
       commParcels.push(...parcels.results)
@@ -223,7 +232,7 @@ async function getParcel (array, globalStats, keysParcelData, pluginConfig, proc
     input.ADR_LOCALITE_TER = input.ADR_LOCALITE_TER.replaceAll('\\\'', '\'')
 
     if (input.num_cadastre1.replace(/\D/g, '').length) {
-      const codeParcelleTotal = commParcels.filter(elem => elem[keysParcelData.code].match(new RegExp(`${array[0].COMM}.....${input.num_cadastre1.replace(/\D/g, '').padStart(4, '0')}`)))
+      const codeParcelleTotal = commParcels.filter(elem => elem[keysParcelData.code].match(new RegExp(`${commCode}.....${input.num_cadastre1.replace(/\D/g, '').padStart(4, '0')}`)))
       let stoElem
 
       if (codeParcelleTotal !== undefined) {
