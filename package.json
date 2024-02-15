@@ -22,12 +22,13 @@
   },
   "homepage": "https://github.com/data-fair/processing-sitadel#readme",
   "devDependencies": {
-    "axios": "^0.21.4",
-    "chalk": "^4.1.2",
-    "config": "^3.3.7",
+    "@data-fair/lib": "^0.23.0",
+    "axios": "^1.6.7",
+    "config": "^3.3.11",
+    "dayjs": "^1.11.10",
+    "draftlog": "^1.0.13",
     "mocha": "^9.2.2",
-    "moment": "^2.29.2",
-    "standard": "^16.0.3"
+    "ws": "^8.16.0"
   },
   "dependencies": {
     "csv": "^6.0.5",
@@ -38,8 +39,5 @@
     "merge-sort-stream": "^1.0.5",
     "pump": "^3.0.0",
     "stream-filter": "^2.1.0"
-  },
-  "directories": {
-    "test": "test"
   }
 }
