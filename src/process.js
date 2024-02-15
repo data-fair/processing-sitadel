@@ -37,7 +37,7 @@ async function retryGeocode (maxRetries, arr, axios, log) {
       throw err
     }
     const ms = 60000 / maxRetries
-    await log.info(`Erreur ${err.status} sur api-adresse.data.gouv : ${err.statusText}. Prochaine tentative dans ${ms.toFixed(0)} ms`)
+    await log.error(`Erreur ${err.status} sur api-adresse.data.gouv : ${err.statusText}. Prochaine tentative dans ${ms.toFixed(0)} ms`)
     await sleep(ms)
     return await retryGeocode(maxRetries - 1, arr, axios, log)
   })
@@ -99,10 +99,10 @@ async function geocode (arr, axios, log) {
 
 function getCommCode (item, processingConfig) {
   const inseeCodeProp = {
-    logements: 'Num_DAU',
-    locaux: 'Num_DAU',
-    amenager: 'Num_PA',
-    demolir: 'Num_PD'
+    logements: 'NUM_DAU',
+    locaux: 'NUM_DAU',
+    amenager: 'NUM_PA',
+    demolir: 'NUM_PD'
   }[processingConfig.processFile]
   return item[inseeCodeProp].charAt(0) === '0' ? item[inseeCodeProp].slice(1, 6) : item.COMM
 }
@@ -111,7 +111,7 @@ async function getParcel (array, globalStats, keysParcelData, pluginConfig, proc
   const commCode = getCommCode(array[0], processingConfig)
 
   let stringRequest = ''
-  let arrayUniNum = [...new Set(array.map(elem => elem.num_cadastre1.replace(/\D/g, '').padStart(4, '0').slice(-4)))]
+  let arrayUniNum = [...new Set(array.map(elem => elem.NUM_CADASTRE1.replace(/\D/g, '').padStart(4, '0').slice(-4)))]
 
   const ecart = 185
   do {
@@ -163,8 +163,8 @@ async function getParcel (array, globalStats, keysParcelData, pluginConfig, proc
         commParcels.push(...parcels.results)
       }
     } catch (err) {
-      await log.info(`Une erreur est survenue sur la commune ${array[0].COMM} : ${err.status}, ${err.statusText}`)
-      await log.info('Paramètres de requête ' + JSON.stringify(params))
+      await log.error(`Une erreur est survenue sur la commune ${array[0].COMM} : ${err.status}, ${err.statusText}`)
+      await log.error('Paramètres de requête ' + JSON.stringify(params))
       throw err
     }
     // get the next string
@@ -198,8 +198,8 @@ async function getParcel (array, globalStats, keysParcelData, pluginConfig, proc
         commParcels.push(...parcels.results)
       }
     } catch (err) {
-      await log.info(`Une erreur est survenue sur la commune ${array[0].COMM} : ${err.status}, ${err.statusText}`)
-      await log.info('Paramètres de requête ' + JSON.stringify(params))
+      await log.error(`Une erreur est survenue sur la commune ${array[0].COMM} : ${err.status}, ${err.statusText}`)
+      await log.error('Paramètres de requête ' + JSON.stringify(params))
       throw err
     }
   }
@@ -233,12 +233,12 @@ async function getParcel (array, globalStats, keysParcelData, pluginConfig, proc
     input.ADR_LIEUDIT_TER = input.ADR_LIEUDIT_TER.replaceAll('\\\'', '\'')
     input.ADR_LOCALITE_TER = input.ADR_LOCALITE_TER.replaceAll('\\\'', '\'')
 
-    if (input.num_cadastre1.replace(/\D/g, '').length) {
-      const codeParcelleTotal = commParcels.filter(elem => elem[keysParcelData.code].match(new RegExp(`${commCode}.....${input.num_cadastre1.replace(/\D/g, '').padStart(4, '0')}`)))
+    if (input.NUM_CADASTRE1.replace(/\D/g, '').length) {
+      const codeParcelleTotal = commParcels.filter(elem => elem[keysParcelData.code].match(new RegExp(`${commCode}.....${input.NUM_CADASTRE1.replace(/\D/g, '').padStart(4, '0')}`)))
       let stoElem
 
       if (codeParcelleTotal !== undefined) {
-        const matches = codeParcelleTotal.filter(s => s[keysParcelData.code].substr(8, 2) === input.sec_cadastre1)
+        const matches = codeParcelleTotal.filter(s => s[keysParcelData.code].substr(8, 2) === input.SEC_CADASTRE1)
         if (matches.length > 0) {
           if (matches.length === 1) {
             stoElem = matches[0]
@@ -388,8 +388,8 @@ async function fusion (a, b, option, log) {
       await log.info(`Pas de fusion nécessaire, utilisation de ${a}.`)
       let out = fs.createReadStream(a, { objectMode: true }).pipe(csv.parse({ columns: true, delimiter: ';' }))
       out = out.pipe(filter(function (data) {
-        if (option.includes(data.DEP)) cpt++
-        return option.length ? option.includes(data.DEP) : true
+        if (option.includes(data.DEP_CODE)) cpt++
+        return option.length ? option.includes(data.DEP_CODE) : true
       }, { objectMode: true }))
       out.on('finish', async () => {
         if (cpt === 0 && option.length > 0) {
@@ -421,12 +421,12 @@ async function fusion (a, b, option, log) {
 
     if (option.length > 0) {
       f1 = f1.pipe(filter(function (data) {
-        if (option.includes(data.DEP)) cpt++
-        return option.length ? option.includes(data.DEP) : true
+        if (option.includes(data.DEP_CODE)) cpt++
+        return option.length ? option.includes(data.DEP_CODE) : true
       }, { objectMode: true }))
       f2 = f2.pipe(filter(function (data) {
-        if (option.includes(data.DEP)) cpt++
-        return option.length ? option.includes(data.DEP) : true
+        if (option.includes(data.DEP_CODE)) cpt++
+        return option.length ? option.includes(data.DEP_CODE) : true
       }, { objectMode: true }))
     }
 
@@ -529,7 +529,7 @@ module.exports = async (pluginConfig, processingConfig, tmpDir, axios, log) => {
     await log.info(`Sûr : ${Math.round(stats.sur * 100 / sum)}%, Géocodé : ${Math.round(stats.geocode * 100 / sum)}%, Géododé peu précis : ${Math.round(stats.premier * 100 / sum)}%, Non défini : ${Math.round(stats.erreur * 100 / sum)}%, Total : ${sum}`)
     await log.info(`Moyenne requête parcelles : ${Math.round(stats.moyReq / stats.sum)} ms`)
   } catch (err) {
-    await log.info(`Erreur : ${err.statusText}`)
+    await log.error(`Erreur : ${err.statusText}`)
     throw err
   }
 }

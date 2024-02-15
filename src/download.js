@@ -1,5 +1,4 @@
 const fs = require('fs-extra')
-const path = require('path')
 const util = require('util')
 const pump = util.promisify(require('pump'))
 const exec = util.promisify(require('child_process').exec)
@@ -24,12 +23,13 @@ module.exports = async (processingConfig, dir = 'data', axios, log) => {
   const processingFile = processingConfig.processFile
   await log.step('Téléchargement')
   for (const file of ressources) {
-    if (file.type === 'main' && file.format !== 'html' && (file.title.normalize('NFD').replace(/[\u0300-\u036f]/g, '')).includes(processingFile)) {
-      const url = new URL(file.url)
-      const filePath = `${dir}/${path.parse(url.pathname).base}`
+    if (file.type === 'main' && file.format === 'api' && (file.title.normalize('NFD').replace(/[\u0300-\u036f]/g, '')).includes(processingFile)) {
+      const filePath = `${dir}/${processingFile}.csv`
       await log.info(`téléchargement du fichier ${file.title}, écriture dans ${filePath}`)
+      const fileId = file.url.split('datafileRid=')[1]
+      const url = `https://data.statistiques.developpement-durable.gouv.fr/dido/api/v1/datafiles/${fileId}/csv?withColumnName=true&withColumnDescription=false&withColumnUnit=false`
       await withStreamableFile(filePath, async (writeStream) => {
-        const res = await axios({ url: url.href, method: 'GET', responseType: 'stream', maxRedirects: 2 })
+        const res = await axios({ url, method: 'GET', responseType: 'stream', maxRedirects: 2 })
         await pump(res.data, writeStream)
       })
 
