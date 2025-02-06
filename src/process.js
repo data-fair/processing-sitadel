@@ -355,7 +355,7 @@ async function getParcel (array, globalStats, keysParcelData, pluginConfig, proc
     ret.push(input)
   }
   const sum = stats.sur + stats.geocode + stats.premier + stats.erreur
-  await log.info(`Commune ${array[0].COMM}, ${array.length} parcelle(s), ${commParcels.length} récupérées en ${duration.toLocaleString('fr')} ms, Sûr : ${Math.round(stats.sur * 100 / sum)}%, Géocodé : ${Math.round(stats.geocode * 100 / sum)}%, Géododé peu précis : ${Math.round(stats.premier * 100 / sum)}%, Non défini : ${Math.round(stats.erreur * 100 / sum)}%`)
+  await log.debug(`Commune ${array[0].COMM}, ${array.length} parcelle(s), ${commParcels.length} récupérées en ${duration.toLocaleString('fr')} ms, Sûr : ${Math.round(stats.sur * 100 / sum)}%, Géocodé : ${Math.round(stats.geocode * 100 / sum)}%, Géododé peu précis : ${Math.round(stats.premier * 100 / sum)}%, Non défini : ${Math.round(stats.erreur * 100 / sum)}%`)
   globalStats.sur += stats.sur
   globalStats.geocode += stats.geocode
   globalStats.premier += stats.premier
